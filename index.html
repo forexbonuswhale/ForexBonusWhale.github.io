@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForexBonusWhale | Premium Trading Hub</title>
+    <style>
+        :root { --gold: #FFD700; --dark: #05070a; --card: #0d1117; --text: #e6edf3; }
+        body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; line-height: 1.6; }
+        
+        /* Navigation */
+        header { background: #000; border-bottom: 2px solid var(--gold); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--gold); }
+        nav button { background: none; border: none; color: #fff; padding: 10px 15px; cursor: pointer; font-weight: 600; }
+        nav button:hover { color: var(--gold); }
+
+        /* Main Content */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.5s; }
+        
+        /* Filters */
+        .filter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sort-options select { background: var(--card); color: #fff; border: 1px solid #333; padding: 5px 10px; border-radius: 5px; }
+
+        /* Cards */
+        .broker-card { background: var(--card); border: 1px solid #21262d; border-radius: 12px; padding: 25px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .broker-info h3 { margin: 0; color: #fff; }
+        .rating-stars { color: var(--gold); font-size: 1.2rem; }
+        .claim-btn { background: var(--gold); color: #000; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (max-width: 768px) { .broker-card { flex-direction: column; text-align: center; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">ForexBonusWhale 🐋</div>
+    <nav>
+        <button onclick="openTab('ndb')">No Deposit</button>
+        <button onclick="openTab('db')">Deposit Bonus</button>
+        <button onclick="openTab('contests')">Contests</button>
+    </nav>
+</header>
+
+<div class="container">
+    <!-- No Deposit Section -->
+    <div id="ndb" class="tab-content active">
+        <div class="filter-header">
+            <h2>No Deposit Bonuses</h2>
+            <div class="sort-options">
+                <select>
+                    <option>Popularity</option>
+                    <option>Rating</option>
+                    <option>Newest</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Broker Item 1 -->
+        <div class="broker-card">
+            <div class="broker-info">
+                <h3>Ryvotrade</h3>
+                <div class="rating-stars">★★★★★ <small style="color:#888">(4.9)</small></div>
+                <p>Get $100 bonus instantly upon verification.</p>
+            </div>
+            <button class="claim-btn">Claim Now</button>
+        </div>
+        
+        <!-- Broker Item 2 -->
+        <div class="broker-card">
+            <div class="broker-info">
+                <h3>InstaForex</h3>
+                <div class="rating-stars">★★★★☆ <small style="color:#888">(4.5)</small></div>
+                <p>Welcome bonus for new active traders.</p>
+            </div>
+            <button class="claim-btn">Claim Now</button>
+        </div>
+    </div>
+    <!-- Add other tabs similarly -->
+</div>
+
+<script>
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+    }
+</script>
+</body>
+</html>
