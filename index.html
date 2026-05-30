@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForexBonusW🐋hale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hidden-section { display: none !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #eab308; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 border-b border-yellow-500 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col lg:flex-row justify-between items-center gap-4">
+            
+            <!-- Logo -->
+            <a href="#" onclick="goHome()" class="text-xl md:text-2xl font-bold text-yellow-500 hover:text-yellow-400 transition cursor-pointer flex items-center gap-1 w-full lg:w-auto">
+                ForexBonusW🐋hale
+            </a>
+            
+            <!-- Search & Filter Container (Hidden in About) -->
+            <div id="search-container" class="w-full lg:w-1/2 flex flex-col sm:flex-row gap-2">
+                <input type="text" id="searchInput" onkeyup="renderAllBrokers()" placeholder="Search brokers..." class="w-full sm:w-2/3 bg-slate-800 text-white border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-yellow-500 text-sm">
+                
+                <select id="sortInput" onchange="renderAllBrokers()" class="w-full sm:w-1/3 bg-slate-800 text-white border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-yellow-500 text-sm cursor-pointer">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="highest_rating">Highest Rated</option>
+                    <option value="popular">Most Popular (Views)</option>
+                    <option value="highest_bonus">Highest Bonus</option>
+                </select>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex gap-4 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 font-semibold text-sm">
+                <button onclick="showSection('no-deposit')" id="nav-no-deposit" class="nav-btn text-yellow-500 whitespace-nowrap hover:text-yellow-500 px-1 py-1 border-b-2 border-yellow-500">No Deposit Bonus</button>
+                <button onclick="showSection('deposit')" id="nav-deposit" class="nav-btn text-slate-300 whitespace-nowrap hover:text-yellow-500 px-1 py-1 border-b-2 border-transparent">Deposit Bonus</button>
+                <button onclick="showSection('contests')" id="nav-contests" class="nav-btn text-slate-300 whitespace-nowrap hover:text-yellow-500 px-1 py-1 border-b-2 border-transparent">Contests</button>
+                <button onclick="showSection('about')" id="nav-about" class="nav-btn text-slate-300 whitespace-nowrap hover:text-yellow-500 px-1 py-1 border-b-2 border-transparent">About</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-8">
+
+        <!-- No Deposit Section -->
+        <section id="no-deposit" class="content-section">
+            <h1 class="text-2xl font-bold mb-6 text-white border-l-4 border-yellow-500 pl-3">No Deposit Bonuses</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="ndb-list">
+                <!-- جافاسکریپت لێرەدا کارتەکان دروست دەکات -->
+            </div>
+        </section>
+
+        <!-- Deposit Section -->
+        <section id="deposit" class="content-section hidden-section">
+            <h1 class="text-2xl font-bold mb-6 text-white border-l-4 border-yellow-500 pl-3">Deposit Bonuses</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="db-list">
+                <!-- جافاسکریپت لێرەدا کارتەکان دروست دەکات -->
+            </div>
+        </section>
+
+        <!-- Contests Section -->
+        <section id="contests" class="content-section hidden-section">
+            <h1 class="text-2xl font-bold mb-6 text-white border-l-4 border-yellow-500 pl-3">Trading Contests</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="contest-list">
+                <!-- جافاسکریپت لێرەدا کارتەکان دروست دەکات -->
+            </div>
+        </section>
+
+        <!-- About Section (Strictly no Search here) -->
+        <section id="about" class="content-section hidden-section bg-slate-900 p-8 rounded-xl border border-slate-800">
+            <h1 class="text-3xl font-bold mb-6 text-white border-l-4 border-yellow-500 pl-4">About Us & Disclaimer</h1>
+            <div class="text-slate-300 leading-relaxed space-y-4 text-lg">
+                <p>
+                    Welcome to <strong>ForexBonusW🐋hale</strong>. Our mission is to provide you with the most updated and reliable forex bonuses in the market. We carefully check brokers, aggregate their offers, and present you with clear, transparent rules.
+                </p>
+                <p>
+                    We filter out the noise so you can find the best No Deposit Bonuses to test your strategies, or the best Deposit Matches to maximize your margin.
+                </p>
+            </div>
+            <div class="mt-8 p-4 bg-slate-950 border-l-4 border-red-500 rounded-r-lg">
+                <h3 class="text-xl font-bold text-red-500 mb-2">Risk Disclaimer</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">
+                    Trading foreign exchange on margin carries a high level of risk and may not be suitable for all investors. The high degree of leverage can work against you as well as for you. We are not responsible for any financial losses. Always read the broker's terms and conditions completely before depositing real money.
+                </p>
+            </div>
+        </section>
+
+        <!-- Detailed Broker View -->
+        <section id="broker-details" class="hidden-section bg-slate-900 rounded-xl border border-yellow-500 shadow-2xl max-w-4xl mx-auto overflow-hidden">
+            
+            <div class="p-8 border-b border-slate-800 bg-slate-950">
+                <button onclick="goBack()" class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2 mb-6 transition">
+                    <span>&larr;</span> Back to list
+                </button>
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                    <div>
+                        <h1 id="detail-name" class="text-4xl font-black text-white flex items-center gap-3">
+                            Broker Name
+                        </h1>
+                        <div class="flex gap-4 mt-3 items-center">
+                            <span id="detail-status" class="text-sm font-bold px-3 py-1 rounded border">Status</span>
+                            <span id="detail-rating" class="text-yellow-500 font-bold">⭐ 0.0</span>
+                            <span id="detail-date" class="text-slate-400 text-sm">Date Added: </span>
+                        </div>
+                    </div>
+                    <div class="text-left md:text-right bg-slate-900 p-4 rounded-lg border border-slate-800">
+                        <p class="text-slate-400 text-sm font-bold uppercase tracking-wider">Reward Amount</p>
+                        <h2 id="detail-bonus" class="text-3xl text-yellow-500 font-black">Bonus</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-8">
+                <!-- Expired Warning Message -->
+                <div id="detail-warning" class="hidden-section bg-red-900/50 border border-red-500 text-red-200 p-4 rounded-lg mb-6">
+                    <strong>⚠️ Notice:</strong> This promotion is currently marked as <strong>Expired</strong> or inactive. Please proceed with caution.
+                </div>
+
+                <div class="bg-slate-950 p-6 rounded-lg mb-8 border border-slate-800 shadow-inner">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <span>📜</span> Rules, Terms & Conditions
+                    </h3>
+                    <p id="detail-desc" class="text-slate-300 leading-relaxed whitespace-pre-line text-lg">Details go here...</p>
+                </div>
+                
+                <a id="detail-link" href="#" target="_blank" class="block text-center bg-yellow-500 text-black font-black text-xl py-4 px-8 rounded-lg hover:bg-yellow-400 transition shadow-lg w-full">
+                    Visit Broker Website &rarr;
+                </a>
+            </div>
+
+            <!-- Review Section -->
+            <div class="p-8 bg-slate-950 border-t border-slate-800">
+                <h3 class="text-2xl font-bold text-white mb-2">Review this Broker</h3>
+                <p class="text-slate-400 mb-6">Share your experience about <span id="review-broker-name" class="font-bold text-yellow-500 text-lg"></span></p>
+                
+                <form onsubmit="submitBrokerReview(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold mb-1 text-slate-300">Your Name</label>
+                            <input type="text" required placeholder="Enter your name" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold mb-1 text-slate-300">Broker Rating</label>
+                            <select required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-yellow-500 focus:outline-none focus:border-yellow-500">
+                                <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
+                                <option value="4">⭐⭐⭐⭐ (Good)</option>
+                                <option value="3">⭐⭐⭐ (Average)</option>
+                                <option value="2">⭐⭐ (Poor)</option>
+                                <option value="1">⭐ (Scam / Terrible)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-300">Your Review</label>
+                        <textarea required rows="4" placeholder="Did you withdraw profits? Was the verification fast? Share details..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-500"></textarea>
+                    </div>
+                    <button type="submit" class="w-full md:w-auto bg-slate-800 border border-slate-700 hover:border-yellow-500 hover:text-yellow-500 text-white font-bold py-3 px-8 rounded-lg transition shadow">
+                        Submit Broker Review
+                    </button>
+                </form>
+            </div>
+            
+        </section>
+
+    </main>
+
+    <script>
+        // داتابەیسی برۆکەرەکان بۆ فلتەرکردن و نیشاندانی زیرەک
+        const brokersData = [
+            // No Deposit Bonuses
+            { id: 1, type: 'ndb', name: 'Ryvotrade', bonusText: '$100', bonusValue: 100, rating: 4.8, views: 24500, status: 'Active', date: '2024-05-20', desc: '1. Register a new account.\n2. Verify your ID and Phone.\n3. Trade 5 lots within 30 days to withdraw profits.', link: 'https://ryvotrade.com' },
+            { id: 2, type: 'ndb', name: 'InstaForex', bonusText: '$1000', bonusValue: 1000, rating: 4.5, views: 56000, status: 'Active', date: '2023-11-15', desc: '1. Open a special promo account.\n2. No deposit needed initially.\n3. Deposit required to withdraw earned profits.', link: 'https://instaforex.com' },
+            { id: 3, type: 'ndb', name: 'XM Broker', bonusText: '$30', bonusValue: 30, rating: 4.9, views: 89000, status: 'Active', date: '2024-01-10', desc: '1. Valid for new clients only.\n2. Non-withdrawable bonus.\n3. All profits made can be withdrawn without restrictions.', link: 'https://xm.com' },
+            { id: 4, type: 'ndb', name: 'Tickmill', bonusText: '$30', bonusValue: 30, rating: 4.7, views: 34000, status: 'Active', date: '2024-03-05', desc: '1. Open Welcome Account.\n2. Trade for 90 days.\n3. Transfer profits up to $100 to live account.', link: 'https://tickmill.com' },
+            { id: 5, type: 'ndb', name: 'JustMarkets', bonusText: '$30', bonusValue: 30, rating: 4.2, views: 12000, status: 'Expired', date: '2023-08-20', desc: '1. Open Welcome Account.\n2. Trade 5 lots within 30 days.\n3. Max profit withdrawal is $30.', link: 'https://justmarkets.com' },
+            { id: 6, type: 'ndb', name: 'FBS', bonusText: '$140', bonusValue: 140, rating: 4.4, views: 45000, status: 'Expired', date: '2022-12-01', desc: 'Level Up Bonus. Download app to get $140.', link: 'https://fbs.com' },
+            { id: 7, type: 'ndb', name: 'SuperForex', bonusText: '$88', bonusValue: 88, rating: 3.5, views: 9000, status: 'Active', date: '2024-04-18', desc: 'No Deposit Bonus $88 for fully verified users.', link: 'https://superforex.com' },
+            { id: 8, type: 'ndb', name: 'Windsor Brokers', bonusText: '$30', bonusValue: 30, rating: 4.6, views: 22000, status: 'Active', date: '2024-02-14', desc: 'Free $30 Prime Account. Open to selected countries.', link: 'https://windsorbrokers.com' },
+            { id: 9, type: 'ndb', name: 'RoboForex', bonusText: '$30', bonusValue: 30, rating: 4.8, views: 78000, status: 'Active', date: '2023-09-10', desc: 'Welcome Bonus. Deposit $10 to activate the $30 free margin.', link: 'https://roboforex.com' },
+            { id: 10, type: 'ndb', name: 'Headway', bonusText: '$111', bonusValue: 111, rating: 4.1, views: 15000, status: 'Active', date: '2024-05-01', desc: 'Get $111 free. 7 days to trade, profits can be withdrawn later.', link: 'https://hw.site' },
+            
+            // Deposit Bonuses
+            { id: 11, type: 'db', name: 'Exness', bonusText: '100% Match', bonusValue: 100, rating: 4.9, views: 120000, status: 'Active', date: '2024-01-01', desc: 'Deposit at least $100 to get a 100% margin bonus.', link: 'https://exness.com' },
+            { id: 12, type: 'db', name: 'HFM', bonusText: '100% Match', bonusValue: 100, rating: 4.8, views: 65000, status: 'Active', date: '2024-02-20', desc: 'Supercharged bonus up to $50,000 max limit.', link: 'https://hfm.com' },
+            { id: 13, type: 'db', name: 'Vantage', bonusText: '50% Match', bonusValue: 50, rating: 4.6, views: 32000, status: 'Active', date: '2024-04-10', desc: '50% on first deposit, 20% on subsequent deposits.', link: 'https://vantagemarkets.com' },
+            { id: 14, type: 'db', name: 'Octa', bonusText: '50% Match', bonusValue: 50, rating: 4.5, views: 88000, status: 'Active', date: '2023-10-05', desc: '50% deposit bonus on every deposit. Margin support.', link: 'https://octafx.com' },
+            { id: 15, type: 'db', name: 'IronFX', bonusText: '100% Sharing', bonusValue: 100, rating: 3.8, views: 14000, status: 'Expired', date: '2023-05-12', desc: '100% sharing bonus to protect from drawdowns.', link: 'https://ironfx.com' },
+            { id: 16, type: 'db', name: 'AvaTrade', bonusText: '20% Welcome', bonusValue: 20, rating: 4.7, views: 41000, status: 'Active', date: '2024-03-22', desc: 'Get 20% extra on your first deposit over $1000.', link: 'https://avatrade.com' },
+            
+            // Contests
+            { id: 17, type: 'contest', name: 'HFM Demo Contest', bonusText: '$2000 Prize', bonusValue: 2000, rating: 4.8, views: 55000, status: 'Active', date: '2024-05-01', desc: 'Register for the monthly demo contest. No real money required.', link: 'https://hfm.com' },
+            { id: 18, type: 'contest', name: 'InstaForex Sniper', bonusText: '$1500 Prize', bonusValue: 1500, rating: 4.5, views: 23000, status: 'Active', date: '2024-05-15', desc: 'Weekly demo contest. Trade fast and win real cash.', link: 'https://instaforex.com' },
+            { id: 19, type: 'contest', name: 'RoboForex King', bonusText: '$1000 Prize', bonusValue: 1000, rating: 4.6, views: 19000, status: 'Active', date: '2024-04-28', desc: 'Daily demo contests available in client portal.', link: 'https://roboforex.com' },
+            { id: 20, type: 'contest', name: 'Tickmill NFP Machine', bonusText: '$500 Prize', bonusValue: 500, rating: 4.9, views: 60000, status: 'Active', date: '2024-05-01', desc: 'Guess the NFP exact number to win $500 to live account.', link: 'https://tickmill.com' },
+            { id: 21, type: 'contest', name: 'Exness Championship', bonusText: '$5000 Prize', bonusValue: 5000, rating: 4.7, views: 12000, status: 'Expired', date: '2023-12-01', desc: 'Ended. Highest return on investment wins.', link: 'https://exness.com' }
+        ];
+
+        // ئەم فەنکشنە کارتەکان بە دیزاینەکەی خۆت دروست دەکاتەوە و دەیخاتە شوێنی خۆی
+        function renderAllBrokers() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const sortMethod = document.getElementById('sortInput').value;
+
+            ['ndb', 'db', 'contest'].forEach(type => {
+                let filtered = brokersData.filter(b => b.type === type && b.name.toLowerCase().includes(searchInput));
+                
+                // لۆجیکی ڕیزبەندکردن (فلتەر)
+                filtered.sort((a, b) => {
+                    if (sortMethod === 'newest') return new Date(b.date) - new Date(a.date);
+                    if (sortMethod === 'oldest') return new Date(a.date) - new Date(b.date);
+                    if (sortMethod === 'highest_rating') return b.rating - a.rating;
+                    if (sortMethod === 'popular') return b.views - a.views;
+                    if (sortMethod === 'highest_bonus') return b.bonusValue - a.bonusValue;
+                });
+
+                let html = '';
+                filtered.forEach(b => {
+                    // دیاریکردنی جۆری Status بۆ بینراوی زیرەک
+                    let statusBadge = b.status === 'Active' 
+                        ? `<span class="bg-green-900/80 text-green-400 border border-green-700 text-xs font-bold px-2 py-1 rounded shadow-sm">🟢 Active</span>`
+                        : `<span class="bg-red-900/80 text-red-400 border border-red-700 text-xs font-bold px-2 py-1 rounded shadow-sm">🔴 Expired</span>`;
+
+                    // دروستکردنی کارتەکە بە تەواوی هەمان دیزاینی تۆ + زانیارییە نوێیەکان
+                    html += `
+                    <div onclick="openBroker(${b.id})" class="broker-card bg-slate-900 p-6 rounded-xl border border-slate-800 hover:border-yellow-500 cursor-pointer transition shadow-lg group flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-1">
+                                <h3 class="text-xl font-bold text-white group-hover:text-yellow-500 broker-name">${b.name}</h3>
+                                ${statusBadge}
+                            </div>
+                            <p class="text-yellow-500 font-bold mt-2 text-lg">Reward: ${b.bonusText}</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-800 flex justify-between items-center text-sm">
+                            <span class="text-slate-300 font-bold">⭐ ${b.rating} / 5</span>
+                            <span class="text-slate-400">👁️ ${(b.views / 1000).toFixed(1)}k Views</span>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                // خستنە ناو لیستەکان ب
