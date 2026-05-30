@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ckb">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ForexBonusWhale - پلاتفۆرمی پێشکەشکردنی بۆنەس و پێداچوونەوەی برۆکەرەکان</title>
+    <!-- Tailwind + Font Awesome for icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* smooth transitions & custom scroll */
+        * { transition: all 0.2s ease; }
+        .hidden-section { display: none; }
+        .rating-star { color: #fbbf24; margin-right: 2px; }
+        .modal-transition { transition: opacity 0.25s ease; }
+        .broker-card, button, select, input, textarea { transition: all 0.2s; }
+        .filter-active { background-color: #eab308; color: #0f172a; border-color: #eab308; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #eab308; border-radius: 10px; }
+        body { background: #020617; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-slate-950 to-slate-900 text-slate-200 font-sans antialiased">
+
+    <!-- HEADER -->
+    <header class="bg-slate-900/90 backdrop-blur-sm border-b border-yellow-500/60 sticky top-0 z-50 shadow-xl">
+        <div class="max-w-7xl mx-auto px-5 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-whale text-yellow-500 text-2xl"></i>
+                <a href="#" onclick="goHome()" class="text-xl md:text-2xl font-extrabold tracking-tight text-yellow-500 hover:text-yellow-400 transition flex items-center gap-1">
+                    ForexBonus<span class="text-white">W🐋hale</span>
+                </a>
+            </div>
+            <!-- search enhanced -->
+            <div class="relative w-full md:w-80">
+                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                <input type="text" id="searchInput" onkeyup="filterBrokersGlobal()" placeholder="گەڕان بە ناوی برۆکەر..." class="w-full bg-slate-800 text-white border border-slate-700 rounded-full pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500 text-sm">
+            </div>
+            <nav class="flex gap-3 flex-wrap justify-center text-sm font-semibold">
+                <button onclick="showSection('no-deposit')" id="nav-ndb" class="px-4 py-1.5 rounded-full bg-slate-800 hover:bg-yellow-600 hover:text-black transition-all"><i class="fas fa-gift mr-1"></i> بۆنەسی بەبێ دەپۆزیت</button>
+                <button onclick="showSection('deposit')" id="nav-dep" class="px-4 py-1.5 rounded-full bg-slate-800 hover:bg-yellow-600"><i class="fas fa-coins mr-1"></i> بۆنەسی دەپۆزیت</button>
+                <button onclick="showSection('contests')" id="nav-cont" class="px-4 py-1.5 rounded-full bg-slate-800 hover:bg-yellow-600"><i class="fas fa-trophy mr-1"></i> پێشبڕکێکان</button>
+                <button onclick="showSection('about')" id="nav-abt" class="px-4 py-1.5 rounded-full bg-slate-800 hover:bg-yellow-600"><i class="fas fa-info-circle mr-1"></i> دەربارە</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-5 py-8">
+
+        <!-- =======================  FILTER PANEL (نوێ و زیرەک) ======================= -->
+        <div id="filterPanel" class="bg-slate-900/60 backdrop-blur-sm rounded-2xl p-4 mb-8 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex flex-wrap gap-3 items-center">
+                <span class="text-sm font-semibold text-slate-300"><i class="fas fa-filter"></i> فیلتەر:</span>
+                <div class="flex gap-2">
+                    <button id="filterAll" onclick="applyBonusFilter('all')" class="filter-btn text-xs px-3 py-1.5 rounded-full bg-yellow-600 text-black font-bold">هەموو</button>
+                    <button id="filterNoDep" onclick="applyBonusFilter('no-deposit')" class="filter-btn text-xs px-3 py-1.5 rounded-full bg-slate-700 hover:bg-yellow-500">بەبێ دەپۆزیت</button>
+                    <button id="filterDep" onclick="applyBonusFilter('deposit')" class="filter-btn text-xs px-3 py-1.5 rounded-full bg-slate-700">بە دەپۆزیت</button>
+                </div>
+                <div class="h-6 w-px bg-slate-700 mx-2"></div>
+                <div class="flex gap-2 items-center">
+                    <span class="text-sm"><i class="fas fa-star text-yellow-500"></i> ڕیزبەندی:</span>
+                    <select id="ratingFilter" onchange="filterByRatingAndSort()" class="bg-slate-800 border border-slate-700 text-sm rounded-lg px-2 py-1.5 focus:ring-yellow-500">
+                        <option value="all">هەموو ئەستێرەکان</option>
+                        <option value="4">4+ ئەستێرە</option>
+                        <option value="3">3+ ئەستێرە</option>
+                        <option value="2">2+ ئەستێرە</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <span class="text-sm"><i class="fas fa-sort-amount-down"></i> ڕیزکردن:</span>
+                    <select id="sortSelect" onchange="filterByRatingAndSort()" class="bg-slate-800 border border-slate-700 text-sm rounded-lg px-2 py-1.5">
+                        <option value="popular">بەناوبانگترین (پێداچوونەوە)</option>
+                        <option value="newest">نوێترین برۆکەر</option>
+                        <option value="rating">بەرزترین ڕیتینگ</option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-xs text-slate-400 flex items-center gap-2">
+                <i class="fas fa-chart-line"></i> <span id="filterResultCount">0</span> برۆکەر دۆزرایەوە
+            </div>
+        </div>
+
+        <!-- Sections content -->
+        <section id="no-deposit" class="content-section">
+            <div class="flex justify-between items-center mb-6 flex-wrap">
+                <h1 class="text-2xl font-black text-white border-l-4 border-yellow-500 pl-4">🎁 بۆنەسی بەبێ دەپۆزیت</h1>
+                <span class="bg-yellow-900 text-yellow-200 text-xs px-3 py-1 rounded-full">بەردەوام تازەکراوە</span>
+            </div>
+            <div id="ndb-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"></div>
+        </section>
+
+        <section id="deposit" class="content-section hidden-section">
+            <h1 class="text-2xl font-black text-white border-l-4 border-yellow-500 pl-4 mb-6">💰 بۆنەسی دەپۆزیت</h1>
+            <div id="dep-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7"></div>
+        </section>
+
+        <section id="contests" class="content-section hidden-section">
+            <h1 class="text-2xl font-black text-white border-l-4 border-yellow-500 pl-4 mb-6">🏆 پێشبڕکێکانی تریدینگ</h1>
+            <div id="contest-list" class="grid grid-cols-1 md:grid-cols-2 gap-7"></div>
+        </section>
+
+        <section id="about" class="content-section hidden-section bg-slate-900/70 rounded-2xl p-8 border border-slate-800">
+            <div class="flex items-center gap-3 mb-4">
+                <i class="fas fa-skull text-red-500 text-3xl"></i>
+                <h1 class="text-3xl font-black text-white">ئاگاداریی توند!</h1>
+            </div>
+            <div class="prose prose-invert max-w-none text-slate-300 space-y-5">
+                <p><span class="text-red-400 font-bold">⚠️ قسەی خراپ بۆ بازرگانە ساختەکان:</span> زۆرێک لە برۆکەرەکان بەڵێنی بۆنەسی زێڕین دەدەن بەڵام لە ڕاستیدا <span class="line-through text-red-500">قۆزەکەن</span> هەڵمەتی فێڵن. ئێمە تەنها برۆکەری پشتڕاستکراو پێشکەش دەکەین، بەڵام <span class="bg-red-900/40 p-1 rounded">بەرپرسیارێتی قەرەبوونەوە لە ئاستی خۆت دەبێت</span>.</p>
+                <p>ئاگادار بە: بۆنەسی بەبێ دەپۆزیت زۆر جار قەبارەی تریدینگ و مارجینی تێدایە. پێش هەر وەبەرهێنانێک مەرجەکان بخوێنەرەوە. <i class="fas fa-dragon text-yellow-500"></i> تیمی فۆرێکس وەیل هەوڵی ڕاستگۆیی دەدات بەڵام ڕیڤیۆی بەکارهێنەران ڕێنمایی سەرەکین.</p>
+                <div class="border-t border-slate-700 pt-4 mt-4 text-sm text-slate-500">
+                    <i class="fas fa-shield-alt"></i> هیچ کام لە پلاتفۆرمەکە ڕێنمایی دارایی پێشکەش ناکات. هەموو مەترسییەکان لەسەر خۆتە.
+                </div>
+            </div>
+        </section>
+
+        <!-- Broker details + review panel (پەنجەرەی پێداچوونەوە و ئەستێرەکان) -->
+        <section id="broker-details" class="hidden-section bg-slate-900 rounded-2xl border-2 border-yellow-500 shadow-2xl max-w-5xl mx-auto overflow-hidden">
+            <div class="relative">
+                <button onclick="goBack()" class="absolute top-4 left-4 z-10 bg-black/50 backdrop-blur p-2 rounded-full hover:bg-yellow-500 text-white"><i class="fas fa-arrow-left"></i></button>
+                <div class="p-8 pt-16 border-b border-slate-800">
+                    <div class="flex justify-between items-start flex-wrap gap-4">
+                        <div>
+                            <h1 id="detail-name" class="text-3xl md:text-4xl font-black text-white">Broker</h1>
+                            <div id="detail-starRating" class="flex items-center gap-2 mt-2">
+                                <!-- dynamic stars -->
+                            </div>
+                        </div>
+                        <span class="bg-green-800 text-green-300 text-sm px-3 py-1 rounded-full"><i class="fas fa-check-circle"></i> پشتڕاستکراوە</span>
+                    </div>
+                    <h2 id="detail-bonus" class="text-2xl text-yellow-500 font-bold mt-4">Bonus</h2>
+                    <div class="bg-slate-950 p-6 rounded-xl my-6 border border-slate-700">
+                        <h3 class="text-lg font-bold flex gap-2"><i class="fas fa-gavel"></i> یاسا و مەرجەکان:</h3>
+                        <p id="detail-desc" class="text-slate-300 whitespace-pre-line mt-2"></p>
+                    </div>
+                    <a id="detail-link" href="#" target="_blank" class="block text-center bg-yellow-500 hover:bg-yellow-400 text-black font-bold text-lg py-4 rounded-xl transition-all"><i class="fas fa-hand-holding-usd mr-2"></i> ئێستا وەرگرتنی بۆنەس</a>
+                </div>
+
+                <!-- Reviews section سیستمێکی پێشکەوتوو -->
+                <div class="p-8 bg-slate-950/80">
+                    <h3 class="text-2xl font-bold mb-2 flex items-center gap-2"><i class="fas fa-comments text-yellow-500"></i> پێداچوونەوەکان و ئەزموونی بەکارهێنەران</h3>
+                    <p class="text-slate-400 text-sm mb-5">پێداچوونەوە ڕاستەقینەکان یارمەتی تریدەرانی دیکە دەدات</p>
+                    <div id="reviewsContainer" class="max-h-80 overflow-y-auto mb-8 space-y-4 pr-2"></div>
+                    
+                    <form onsubmit="submitBrokerReview(event)" class="bg-slate-900 p-5 rounded-xl border border-slate-700">
+                        <h4 class="font-bold mb-3">📝 ڕیڤیۆی خۆت بنووسە</h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div><label class="text-xs">ناوی تۆ</label><input type="text" id="reviewerName" required placeholder="ناوی تریدەر" class="w-full bg-slate-800 rounded-lg px-3 py-2 border border-slate-600"></div>
+                            <div><label class="text-xs">ڕیزبەندی (ئەستێرە)</label>
+                                <select id="reviewStars" class="w-full bg-slate-800 rounded-lg px-3 py-2">
+                                    <option value="5">⭐⭐⭐⭐⭐ - زۆر باش</option><option value="4">⭐⭐⭐⭐ - باش</option><option value="3">⭐⭐⭐ - مامناوەند</option>
+                                    <option value="2">⭐⭐ - خراپ</option><option value="1">⭐ - فێڵ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-3"><label class="text-xs">پێداچوونەوە</label><textarea id="reviewText" rows="2" required placeholder="ئایا توانیت بۆنەسەکە وەربگریت؟ ..." class="w-full bg-slate-800 rounded-lg px-3 py-2"></textarea></div>
+                        <button type="submit" class="mt-4 bg-yellow-600 hover:bg-yellow-500 text-black font-bold py-2 px-5 rounded-lg transition"><i class="fas fa-paper-plane"></i> ناردنی ڕیڤیۆ</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-slate-800 py-6 text-center text-slate-500 text-xs mt-12">
+        <p>© 2025 ForexBonusWhale | هەموو مافێک پارێزراوە | فۆرێکس مەترسی بەرزە | پێشنیارەکانمان بە پێداچوونەوەی کۆمەڵگەیی ڕێنمایی دەکرێت</p>
+    </footer>
+
+    <script>
+        // ---------- داتابەیسێکی بەرفراوانی برۆکەر (زیاتر لە 12 برۆکەری جیاواز بۆ قوڵی) ----------
+        const BROKERS_DB = [
+            { id: 1, name: "Ryvotrade", bonusAmount: "$100", type: "no-deposit", desc: "1. تۆمارکردن و پشتڕاستکردنەوە. 2. ترید 5 لۆت لە 30 ڕۆژدا. 3. قازانجەکان دەتوانرێت وەربگیرێت.", link: "https://ryvotrade.com", rating: 4.3, reviewCount: 24, dateAdded: "2025-04-01" },
+            { id: 2, name: "InstaForex", bonusAmount: "$1000", type: "no-deposit", desc: "ئەکاونتێکی تایبەت بکەرەوە، بۆنەس بەبێ دەپۆزیت بەڵام بۆ وەرگرتنی قازانج پێویست بە دەپۆزیت هەیە.", link: "https://instaforex.com", rating: 4.7, reviewCount: 156, dateAdded: "2025-02-10" },
+            { id: 3, name: "XM Broker", bonusAmount: "$30", type: "no-deposit", desc: "بۆ کڕیارانی نوێ. قازانجی وەرگیراو دەتوانرێت بێتە دەرەوە.", link: "https://xm.com", rating: 4.5, reviewCount: 89, dateAdded: "2025-03-15" },
+            { id: 4, name: "Exness", bonusAmount: "100% Match up to $500", type: "deposit", desc: "دەپۆزیتی $100 یان زیاتر، 100% مارج بۆنەس بۆ ترید.", link: "https://exness.com", rating: 4.9, reviewCount: 340, dateAdded: "2025-01-20" },
+            { id: 5, name: "HFM (HotForex)", bonusAmount: "100% welcome bonus", type: "deposit", desc: "بۆنەسی یەکەم دەپۆزیت تا $300.", link: "https://hfm.com", rating: 4.6, reviewCount: 210, dateAdded: "2025-02-28" },
+            { id: 6, name: "FXTM", bonusAmount: "$50 No Deposit", type: "no-deposit", desc: "پێویست بە کۆدی تایبەت. پشتڕاستکردنەوە پێویستە.", link: "https://forextime.com", rating: 4.2, reviewCount: 67, dateAdded: "2025-03-01" },
+            { id: 7, name: "OctaFX", bonusAmount: "50% deposit bonus", type: "deposit", desc: "بۆ هەر دەپۆزیتێک 50% بۆنەس بەرزترین 200$", link: "https://octafx.com", rating: 4.4, reviewCount: 103, dateAdded: "2025-04-10" },
+            { id: 8, name: "FBS", bonusAmount: "$100 Free", type: "no-deposit", desc: "ئەکاونت بکەرەوە و بۆنەس وەربگرە.", link: "https://fbs.com", rating: 4.0, reviewCount: 432, dateAdded: "2025-03-22" },
+            { id: 9, name: "IC Markets", bonusAmount: "30% deposit", type: "deposit", desc: "بۆنەسی دەپۆزیت بۆ ئەکاونتەکانی RAW Spread", link: "https://icmarkets.com", rating: 4.8, reviewCount: 275, dateAdded: "2025-01-05" },
+            { id: 10, name: "Pepperstone", bonusAmount: "$0 (no bonus now but contest)", type: "contests", desc: "پێشبڕکێی مانگانەی مەکۆی دێمۆ بە جایزەی $1000", link: "https://pepperstone.com", rating: 4.7, reviewCount: 98, dateAdded: "2025-03-30" },
+            { id: 11, name: "AvaTrade", bonusAmount: "$200 contest", type: "contests", desc: "بەشداری لە پێشبڕکێی ڕاستەقینە بکە و براوەکان 200$ وەردەگرن.", link: "https://avatrade.com", rating: 4.3, reviewCount: 56, dateAdded: "2025-04-05" },
+            { id: 12, name: "Tickmill", bonusAmount: "30$ No Deposit", type: "no-deposit", desc: "بۆنەسی ئامادەکردنی ئەکاونت - 30$ بەبێ مەرجی دەپۆزیت.", link: "https://tickmill.com", rating: 4.1, reviewCount: 44, dateAdded: "2025-04-12" },
+            { id: 13, name: "RoboForex", bonusAmount: "$1500 Welcome", type: "deposit", desc: "تا 1500$ بۆنەسی ڕێژەیی بۆ هەر دەپۆزیتێک.", link: "https://roboforex.com", rating: 4.2, reviewCount: 188, dateAdded: "2025-02-18" },
+            { id: 14, name: "Admiral Markets", bonusAmount: "Demo contest 2000€", type: "contests", desc: "پێشبڕکێی دێمۆ ئەکاونت بۆ فێربوون و بردنەوەی خەڵات", link: "https://admiralmarkets.com", rating: 4.0, reviewCount: 32, dateAdded: "2025-03-25" }
+        ];
+
+        // بارکردنی reviews لە localStorage
+        let allReviews = JSON.parse(localStorage.getItem("forexBrokerReviews")) || [];
+
+        function getBrokerReviews(brokerName) {
+            return allReviews.filter(r => r.brokerName === brokerName);
+        }
+        function computeBrokerRating(broker) {
+            let brokerSpecific = getBrokerReviews(broker.name);
+            if (brokerSpecific.length === 0) return broker.rating; // default
+            let sum = brokerSpecific.reduce((acc, cur) => acc + cur.stars, 0);
+            return (sum / brokerSpecific.length).toFixed(1);
+        }
+        function getTotalReviews(broker) {
+            let revs = getBrokerReviews(broker.name);
+            return revs.length + (broker.reviewCount || 0);
+        }
+
+        // نمایش ئەستێرە HTML
+        function renderStars(ratingValue) {
+            let fullStars = Math.floor(ratingValue);
+            let half = (ratingValue % 1) >= 0.5;
+            let starsHtml = '';
+            for (let i=0; i<fullStars; i++) starsHtml += '<i class="fas fa-star text-yellow-400"></i>';
+            if(half) starsHtml += '<i class="fas fa-star-half-alt text-yellow-400"></i>';
+            let empty = 5 - fullStars - (half?1:0);
+            for(let i=0;i<empty;i++) starsHtml += '<i class="far fa-star text-yellow-400"></i>';
+            return `<span class="flex items-center gap-1">${starsHtml} <span class="text-sm text-slate-300">(${ratingValue})</span></span>`;
+        }
+
+        // گۆڕینی UI فیلتەرەکان
+        let currentBonusFilter = "all";
+        let currentRatingFilter = "all";
+        let currentSort = "popular";
+
+        function applyBonusFilter(type) { currentBonusFilter = type; filterByRatingAndSort(); updateFilterButtonsUI(type);}
+        function filterByRatingAndSort() {
+            currentRatingFilter = document.getElementById('ratingFilter').value;
+            currentSort = document.getElementById('sortSelect').value;
+            renderAllBrokerCards();
+        }
+        function updateFilterButtonsUI(activeType) {
+            document.querySelectorAll('.filter-btn').forEach(btn=>btn.classList.remove('bg-yellow-600','text-black','font-bold'));
+            if(activeType==='all') document.getElementById('filterAll').classList.add('bg-yellow-600','text-black');
+            else if(activeType==='no-deposit') document.getElementById('filterNoDep').classList.add('bg-yellow-600','text-black');
+            else if(activeType==='deposit') document.getElementById('filterDep').classList.add('bg-yellow-600','text-black');
+        }
+
+        function filterBrokersGlobal() {
+            renderAllBrokerCards();
+        }
+
+        // کۆکردنەوە و ڕیزکردن و فیلتەر
+        function getFilteredBrokers() {
+            let searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = BROKERS_DB.filter(b => {
+                if(currentBonusFilter !== 'all' && b.type !== currentBonusFilter) return false;
+                let ratingValue = parseFloat(computeBrokerRating(b));
+                if(currentRatingFilter !== 'all') {
+                    let min = parseInt(currentRatingFilter);
+                    if(ratingValue < min) return false;
+                }
+                if(searchTerm && !b.name.toLowerCase().includes(searchTerm)) return false;
+                return true;
+            });
+            // ڕیزکردن
+            if(currentSort === 'popular') filtered.sort((a,b)=> getTotalReviews(b) - getTotalReviews(a));
+            else if(currentSort === 'newest') filtered.sort((a,b)=> new Date(b.dateAdded) - new Date(a.dateAdded));
+            else if(currentSort === 'rating') filtered.sort((a,b)=> parseFloat(computeBrokerRating(b)) - parseFloat(computeBrokerRating(a)));
+            return filtered;
+        }
+
+        function renderAllBroker
