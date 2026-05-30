@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Broker Details - ForexBonusWhale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0B132B; color: #FFFFFF; font-family: sans-serif; }
+        .content-card { background-color: #1C2541; border: 1px solid #3A506B; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Back Button -->
+        <button onclick="window.location.href='index.html'" class="mb-6 text-yellow-400 hover:text-yellow-500 font-semibold flex items-center gap-2">
+            ← Back to Home
+        </button>
+
+        <!-- Dynamic Broker Content -->
+        <div id="broker-details" class="content-card p-6 md:p-8 rounded-2xl shadow-xl">
+            <h1 class="text-3xl md:text-5xl font-bold text-white mb-2" id="broker-name">Loading...</h1>
+            <div class="flex items-center gap-4 mb-6">
+                <span id="broker-status" class="px-3 py-1 rounded-full text-xs font-bold uppercase"></span>
+                <span class="text-gray-400 text-lg" id="broker-rating">⭐ 0.0</span>
+            </div>
+
+            <hr class="border-gray-700 mb-6">
+
+            <!-- Bonus Rules Section -->
+            <div class="mb-8">
+                <h2 class="text-xl font-bold text-yellow-400 mb-3">🎁 Bonus & Rules Regulations</h2>
+                <div class="bg-[#0B132B] p-4 rounded-xl border border-gray-800">
+                    <div class="text-2xl font-bold text-green-400 mb-3" id="bonus-amount"></div>
+                    <p class="whitespace-pre-line text-gray-300 leading-relaxed" id="broker-desc"></p>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <a id="claim-btn" href="#" target="_blank" class="block w-full text-center bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold py-4 rounded-xl transition-all text-lg shadow-lg mb-8">
+                Claim This Bonus Now
+            </a>
+
+            <!-- Reviews Section -->
+            <div class="mt-10">
+                <h2 class="text-xl font-bold text-yellow-400 mb-4">💬 User Reviews & Feedback</h2>
+                
+                <!-- Add Review Form -->
+                <div class="bg-[#131C35] p-4 rounded-xl border border-gray-800 mb-6">
+                    <h3 class="text-sm font-semibold text-gray-300 mb-3">Leave a Review:</h3>
+                    <div class="flex gap-2 mb-3">
+                        <select id="user-rating" class="bg-[#0B132B] border border-gray-700 rounded px-3 py-1 text-yellow-400">
+                            <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                            <option value="4">⭐⭐⭐⭐ (4)</option>
+                            <option value="3">⭐⭐⭐ (3)</option>
+                            <option value="2">⭐⭐ (2)</option>
+                            <option value="1">⭐ (1)</option>
+                        </select>
+                        <input type="text" id="user-name" placeholder="Your Name" class="bg-[#0B132B] border border-gray-700 rounded px-3 py-1 flex-1 text-white">
+                    </div>
+                    <textarea id="user-text" rows="3" placeholder="Write your review or rules experience..." class="w-full bg-[#0B132B] border border-gray-700 rounded p-3 text-white text-sm mb-3"></textarea>
+                    <button onclick="submitReview()" class="bg-yellow-500 text-slate-900 font-bold px-4 py-2 rounded text-sm hover:bg-yellow-600">Submit Review</button>
+                </div>
+
+                <!-- Display List of Reviews -->
+                <div id="reviews-list" class="space-y-4">
+                    <!-- Dynamic reviews will load here -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Data script inside details to keep it fully operational -->
+    <script src="app.js"></script>
+    <script>
+        // Extract URL Parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const brokerName = urlParams.get('broker');
+        const brokerType = urlParams.get('type');
+
+        let currentBroker = null;
+
+        // Find the matching broker data
+        if (brokerName && brokerType && brokersData[brokerType]) {
+            currentBroker = brokersData[brokerType].find(b => b.name === brokerName);
+        }
+
+        if (currentBroker) {
+            // Render basic details
+            document.getElementById('broker-name').textContent = currentBroker.name;
+            document.getElementById('bonus-amount').textContent = "Bonus Value: " + currentBroker.bonus;
+            document.getElementById('broker-desc').textContent = currentBroker.description;
+            document.getElementById('broker-rating').textContent = `⭐ ${currentBroker.rating} (${currentBroker.reviews} Global Reviews)`;
+            document.getElementById('claim-btn').href = currentBroker.link;
+
+            // Handle status badge
+            const statusBadge = document.getElementById('broker-status');
+            statusBadge.textContent = currentBroker.status;
+            if(currentBroker.status === 'active') {
+                statusBadge.classList.add('bg-green-500', 'text-white');
+            } else {
+                statusBadge.classList.add('bg-red-500', 'text-white');
+            }
+
+            displayLocalReviews();
+        } else {
+            document.getElementById('broker-details').innerHTML = `<p class="text-red-400 font-bold text-center">Broker not found or invalid link!</p>`;
+        }
+
+        // Functions for handling reviews locally
+        function getStorageKey() {
+            return `reviews_${brokerName.replace(/\s+/g, '_')}`;
+        }
+
+        function displayLocalReviews() {
+            const listContainer = document.getElementById('reviews-list');
+            const key = getStorageKey();
+            const localData = localStorage.getItem(key);
+            const customReviews = localData ? JSON.parse(localData) : [];
+
+            if (customReviews.length === 0) {
+                listContainer.innerHTML = `<p class="text-gray-500 text-sm italic">No custom reviews yet. Be the first to leave one!</p>`;
+                return;
+            }
+
+            listContainer.innerHTML = customReviews.map(rev => `
+                <div class="bg-[#0B132B] p-4 rounded-xl border border-gray-800">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-bold text-yellow-400">${rev.name}</span>
+                        <span class="text-xs text-gray-500">${rev.stars} ⭐</span>
+                    </div>
+                    <p class="text-sm text-gray-300">${rev.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function submitReview() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            const textInput = document.getElementById('user-text').value.trim();
+            const ratingInput = document.getElementById('user-rating').value;
+
+            if (!nameInput || !textInput) {
+                alert('Please enter your name and review text!');
+                return;
+            }
+
+            const key = getStorageKey();
+            const localData = localStorage.getItem(key);
+            const customReviews = localData ? JSON.parse(localData) : [];
+
+            customReviews.unshift({
+                name: nameInput,
+                text: textInput,
+                stars: ratingInput
+            });
+
+            localStorage.setItem(key, JSON.stringify(customReviews));
+            
+            // Reset inputs
+            document.getElementById('user-name').value = '';
+            document.getElementById('user-text').value = '';
+            
+            // Refresh display
+            displayLocalReviews();
+        }
+    </script>
+</body>
+</html>
