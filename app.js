@@ -124,17 +124,13 @@ function renderBrokers(type) {
             default: return 0;
         }
     });
-
-    container.innerHTML = filtered.map(broker => `
-        <div class="broker-card p-6 rounded-xl" onclick="openBroker('${type}', ${JSON.stringify(broker).replace(/'/g, '\\\'')}); return false;">
+container.innerHTML = filtered.map(broker => `
+        <div class="broker-card p-6 rounded-xl cursor-pointer hover:ring-2 hover:ring-yellow-500 transition-all" onclick="window.location.href='details.html?broker=' + encodeURIComponent('${broker.name}')">
             <div class="flex justify-between items-start mb-3">
                 <h3 class="text-lg md:text-xl font-bold text-white">${broker.name}</h3>
                 <span class="badge-${broker.status} px-2 py-1 rounded text-xs font-bold">${broker.status.toUpperCase()}</span>
-            </div>
-            <p class="text-yellow-500 font-bold mb-2">${broker.bonus}</p>
-            <div class="flex justify-between items-center text-sm text-slate-400">
-                <span class="rating-stars">⭐ ${broker.rating}/5</span>
-                <span>(${broker.reviews})</span>
+                
+
             </div>
             <p class="text-sm text-slate-400 mt-3 hover:text-yellow-500">View Details →</p>
         </div>
