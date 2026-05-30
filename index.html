@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForexBonusWhale - Premium Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5); }
+        .bg-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 min-h-screen">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900 border-b border-yellow-500 p-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-black text-yellow-500 uppercase tracking-tighter">ForexBonusWhale</h1>
+            <nav class="space-x-6 text-sm font-bold">
+                <a href="#" class="hover:text-yellow-500">NO DEPOSIT</a>
+                <a href="#" class="hover:text-yellow-500">DEPOSIT BONUS</a>
+                <a href="#" class="hover:text-yellow-500">CONTESTS</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <!-- Search and Filter Panel -->
+        <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 mb-8 flex flex-col md:flex-row gap-4">
+            <input type="text" id="searchInput" onkeyup="renderBrokers()" placeholder="Search through 20+ brokers..." class="w-full bg-slate-950 border border-slate-700 p-3 rounded-lg focus:border-yellow-500 outline-none">
+            <select id="sortSelect" onchange="renderBrokers()" class="bg-slate-950 border border-slate-700 p-3 rounded-lg text-yellow-500 font-bold outline-none">
+                <option value="all">All Bonuses</option>
+                <option value="active">Only Active</option>
+                <option value="expired">Expired</option>
+            </select>
+        </div>
+
+        <!-- Broker Grid -->
+        <div id="grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </main>
+
+    <script>
+        // Data Bank (More than 20 Brokers)
+        const brokers = [
+            { id: 1, name: 'Ryvotrade', bonus: '$100', status: 'Active', rating: 4.8, type: 'NDB' },
+            { id: 2, name: 'InstaForex', bonus: '$1000', status: 'Active', rating: 4.5, type: 'NDB' },
+            { id: 3, name: 'XM Broker', bonus: '$30', status: 'Active', rating: 4.9, type: 'NDB' },
+            { id: 4, name: 'Tickmill', bonus: '$30', status: 'Active', rating: 4.7, type: 'NDB' },
+            { id: 5, name: 'JustMarkets', bonus: '$30', status: 'Expired', rating: 4.2, type: 'NDB' },
+            { id: 6, name: 'FBS', bonus: '$140', status: 'Expired', rating: 4.4, type: 'NDB' },
+            { id: 7, name: 'SuperForex', bonus: '$88', status: 'Active', rating: 3.5, type: 'NDB' },
+            { id: 8, name: 'Windsor Brokers', bonus: '$30', status: 'Active', rating: 4.6, type: 'NDB' },
+            { id: 9, name: 'RoboForex', bonus: '$30', status: 'Active', rating: 4.8, type: 'NDB' },
+            { id: 10, name: 'Headway', bonus: '$111', status: 'Active', rating: 4.1, type: 'NDB' },
+            { id: 11, name: 'FortFS', bonus: '$35', status: 'Expired', rating: 2.1, type: 'NDB' },
+            { id: 12, name: 'Exness', bonus: '100% Match', status: 'Active', rating: 4.9, type: 'DB' },
+            { id: 13, name: 'HFM', bonus: '100% Match', status: 'Active', rating: 4.8, type: 'DB' },
+            { id: 14, name: 'Vantage', bonus: '50% Match', status: 'Active', rating: 4.6, type: 'DB' },
+            { id: 15, name: 'Octa', bonus: '50% Match', status: 'Active', rating: 4.5, type: 'DB' },
+            { id: 16, name: 'IronFX', bonus: '100% Sharing', status: 'Expired', rating: 3.8, type: 'DB' },
+            { id: 17, name: 'AvaTrade', bonus: '20% Welcome', status: 'Active', rating: 4.7, type: 'DB' },
+            { id: 18, name: 'HFM Demo', bonus: '$2000 Prize', status: 'Active', rating: 4.8, type: 'Contest' },
+            { id: 19, name: 'InstaForex Sniper', bonus: '$1500 Prize', status: 'Active', rating: 4.5, type: 'Contest' },
+            { id: 20, name: 'RoboForex King', bonus: '$1000 Prize', status: 'Active', rating: 4.6, type: 'Contest' },
+            { id: 21, name: 'Tickmill NFP', bonus: '$500 Prize', status: 'Active', rating: 4.9, type: 'Contest' }
+        ];
+
+        function renderBrokers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filter = document.getElementById('sortSelect').value;
+            const grid = document.getElementById('grid');
+            
+            let filtered = brokers.filter(b => b.name.toLowerCase().includes(query));
+            
+            if(filter !== 'all') {
+                filtered = filtered.filter(b => b.status.toLowerCase() === filter);
+            }
+
+            grid.innerHTML = filtered.map(b => `
+                <div class="bg-gradient p-6 rounded-xl border border-slate-800 card-shadow hover:border-yellow-500 transition">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-black text-white">${b.name}</h2>
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold ${b.status === 'Active' ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}">${b.status}</span>
+                    </div>
+                    <p class="text-yellow-500 text-3xl font-black mb-4">${b.bonus}</p>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Rating: ${b.rating}/5</span>
+                        <button class="bg-yellow-500 text-black font-bold px-4 py-2 rounded-lg hover:bg-yellow-400">CLAIM</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderBrokers();
+    </script>
+</body>
+</html>
