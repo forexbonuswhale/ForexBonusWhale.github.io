@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForexBonusWhale - Best Forex Bonuses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0B132B; color: #FFFFFF; font-family: sans-serif; }
+        .broker-card { background-color: #1C2541; border: 1px solid #3A506B; }
+        .badge-active { background-color: #10B981; color: white; }
+        .badge-inactive { background-color: #EF4444; color: white; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="text-center my-10">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-yellow-400 mb-2">ForexBonusWhale</h1>
+            <p class="text-gray-400 text-lg">Find and Compare the Best Forex No-Deposit & Deposit Bonuses</p>
+        </header>
+
+        <!-- Stats Counter -->
+        <div class="grid grid-cols-3 gap-4 text-center mb-10 bg-[#131C35] p-4 rounded-xl border border-gray-800">
+            <div>
+                <div id="ndb-count" class="text-2xl md:text-3xl font-bold text-yellow-400">0</div>
+                <div class="text-xs md:text-sm text-gray-400">No-Deposit Bonuses</div>
+            </div>
+            <div>
+                <div id="db-count" class="text-2xl md:text-3xl font-bold text-yellow-400">0</div>
+                <div class="text-xs md:text-sm text-gray-400">Deposit Bonuses</div>
+            </div>
+            <div>
+                <div id="contests-count" class="text-2xl md:text-3xl font-bold text-yellow-400">0</div>
+                <div class="text-xs md:text-sm text-gray-400">Trading Contests</div>
+            </div>
+        </div>
+
+        <!-- Section: No-Deposit Bonuses -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white border-b-2 border-yellow-400 pb-2">💰 No-Deposit Bonuses (NDB)</h2>
+            </div>
+            <div id="ndb-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Brokers will load here automatically -->
+            </div>
+        </section>
+
+        <!-- Section: Deposit Bonuses -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white border-b-2 border-yellow-400 pb-2">💳 Deposit Bonuses</h2>
+            </div>
+            <div id="db-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Brokers will load here automatically -->
+            </div>
+        </section>
+
+        <!-- Section: Contests -->
+        <section class="mb-12">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-white border-b-2 border-yellow-400 pb-2">🏆 Live & Demo Contests</h2>
+            </div>
+            <div id="contests-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Brokers will load here automatically -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Connect to the script file -->
+    <script src="app.js"></script>
+</body>
+</html>
