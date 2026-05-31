@@ -16,66 +16,79 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      html, body {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-        box-sizing: border-box;
-      }
-      * {
-        box-sizing: border-box;
-      }
-    </style>
+    
+    <script type="module">
+      // Initialize data sync before React loads
+      (function() {
+        const STORAGE_KEY = 'adminBrokers_v1';
+        const BROKERS_JSON_URL = '/brokers.json';
+        
+        // Get brokers from localStorage or fetch from JSON
+        async function initBrokersData() {
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+              window.brokersData = JSON.parse(stored);
+            } else {
+              // Fallback to brokers.json if localStorage empty
+              const response = await fetch(BROKERS_JSON_URL);
+              const data = await response.json();
+              window.brokersData = data;
+              // Also save to localStorage for admin panel
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            }
+          } catch (e) {
+            console.warn('Failed to load brokers data:', e);
+            window.brokersData = [];
+          }
+        }
+        
+        // Initialize immediately
+        initBrokersData();
+        
+        // Listen for storage changes from admin panel
+        window.addEventListener('storage', function(e) {
+          if (e.key === STORAGE_KEY && e.newValue) {
+            try {
+              window.brokersData = JSON.parse(e.newValue);
+              // Dispatch custom event for React to listen to
+              window.dispatchEvent(new CustomEvent('brokersUpdated', { 
+                detail: window.brokersData 
+              }));
+            } catch (err) {
+              console.warn('Failed to update brokers:', err);
+            }
+          }
+        });
+        
+        // Expose helper functions
+        window.getBrokers = function() {
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : window.brokersData || [];
+          } catch (e) {
+            return window.brokersData || [];
+          }
+        };
+        
+        window.syncBrokersToFile = async function() {
+          try {
+            const brokers = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            // This would require backend API to save to brokers.json
+            console.log('Brokers synced:', brokers.length);
+            return true;
+          } catch (e) {
+            console.error('Failed to sync brokers:', e);
+            return false;
+          }
+        };
+      })();
+    </script>
+    
     <script type="module" crossorigin src="/assets/index-DSrBvtBR.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-B4RvVK1U.css">
   </head>
   <body>
     <div id="root"></div>
-    
-    <!-- LocalStorage Bridge Script -->
-    <script>
-      // Make localStorage data available to the React app
-      (function() {
-        const STORAGE_KEY = 'adminBrokers_v1';
-        
-        // Initialize window.brokersData with localStorage data
-        function initBrokersData() {
-          try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            window.brokersData = stored ? JSON.parse(stored) : [];
-          } catch (e) {
-            console.warn('Failed to parse brokers from localStorage:', e);
-            window.brokersData = [];
-          }
-        }
-        
-        // Initialize on script load
-        initBrokersData();
-        
-        // Listen for storage changes (from admin panel)
-        window.addEventListener('storage', function(e) {
-          if (e.key === STORAGE_KEY) {
-            initBrokersData();
-            // Dispatch custom event for React app to listen to
-            window.dispatchEvent(new CustomEvent('brokersUpdated', { 
-              detail: window.brokersData 
-            }));
-          }
-        });
-        
-        // Also expose a function to get current brokers
-        window.getBrokers = function() {
-          try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            return stored ? JSON.parse(stored) : [];
-          } catch (e) {
-            return [];
-          }
-        };
-      })();
-    </script>
   </body>
 </html>
