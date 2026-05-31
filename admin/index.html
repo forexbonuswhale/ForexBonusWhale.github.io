@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Panel – Broker Bonus Manager (Live Cloud)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --card: #181818;
+    --border: #2a2a2a;
+    --accent: #f0b429;
+    --accent2: #e53e3e;
+    --accent3: #38a169;
+    --text: #f0f0f0;
+    --muted: #888;
+    --input-bg: #1e1e1e;
+    --radius: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.6);
+  }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+  #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: radial-gradient(ellipse at center, #1a1400 0%, #0a0a0a 70%); }
+  .login-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 48px 40px; width: 360px; text-align: center; box-shadow: var(--shadow); }
+  .login-box input { width: 100%; padding: 12px 16px; background: var(--input-bg); border: 1px solid var(--border); border-radius: var(--radius); color: #fff; text-align: center; margin-bottom: 14px; letter-spacing: 3px; }
+  .login-box button { width: 100%; padding: 12px; background: var(--accent); color: #000; font-weight: 700; border: none; border-radius: var(--radius); cursor: pointer; }
+  #admin-shell { display: none; min-height: 100vh; }
+  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; }
+  header .brand { font-weight: 800; color: var(--accent); }
+  main { padding: 28px; max-width: 1400px; margin: 0 auto; }
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+  .stat-card .stat-value { font-size: 1.7rem; font-weight: 800; color: var(--accent); }
+  .toolbar { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; }
+  .toolbar input { flex: 1; padding: 9px 14px; background: var(--input-bg); border: 1px solid var(--border); color: #fff; border-radius: var(--radius); }
+  .btn-add { background: var(--accent); color: #000; font-weight: bold; padding: 9px 20px; border: none; border-radius: var(--radius); cursor: pointer; }
+  .table-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
+  .btn-icon { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 5px 10px; border-radius: 6px; cursor: pointer; margin-right: 5px; }
+  .btn-icon.del:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn-icon.edit:hover { border-color: var(--accent); color: var(--accent); }
+  
+  /* Modal Overlay */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: 14px; width: 100%; max-width: 580px; padding: 24px; }
+  .form-row { margin-bottom: 16px; }
+  .form-row label { display: block; font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+  .form-row input, .form-row select, .form-row textarea { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); color: #fff; border-radius: var(--radius); }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 10px; }
+  #toast { position: fixed; bottom: 28px; right: 28px; background: var(--accent3); color: #fff; padding: 12px 22px; border-radius: var(--radius); display: none; z-index: 400; }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h2>Admin Access</h2>
+    <p style="color:var(--muted); margin-bottom:20px;">Live Cloud Control</p>
+    <input type="password" id="pwd-input" placeholder="Enter password" />
+    <button onclick="tryLogin()">Sign In</button>
+  </div>
+</div>
+
+<div id="admin-shell">
+  <header>
+    <div class="brand">⚡ Broker Admin (Firebase)</div>
+    <button class="btn-logout" onclick="logout()" style="background:transparent; color:#fff; border:1px solid #333; padding:5px 10px; cursor:pointer;">Logout</button>
+  </header>
+  <main>
+    <div class="stats-row">
+      <div class="stat-card"><div style="font-size:12px; color:var(--muted);">TOTAL BROKERS</div><div class="stat-value" id="total-count">0</div></div>
+    </div>
+    <div class="toolbar">
+      <input type="search" id="search-input" placeholder="Search broker..." oninput="renderTable()" />
+      <button class="btn-add" onclick="openAdd()">+ Add Broker</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Broker Name</th>
+            <th>Bonus</th>
+            <th>Category</th>
+            <th>Status</th>
+            <th>Views</th>
+            <th>Rating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h3 id="modal-title" style="margin-bottom:20px;">Add Broker</h3>
+    <input type="hidden" id="f-key" />
+    <input type="hidden" id="f-id" />
+    <div class="form-row"><label>Broker Name</label><input type="text" id="f-name" /></div>
+    <div class="form-row"><label>Bonus Amount</label><input type="text" id="f-bonus" /></div>
+    <div class="form-row">
+      <label>Category</label>
+      <select id="f-category">
+        <option value="no_deposit">No Deposit Bonus</option>
+        <option value="deposit">Deposit Bonus</option>
+        <option value="contest">Contest</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Status</label>
+      <select id="f-status">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Link URL</label><input type="url" id="f-link" /></div>
+    <div class="form-row"><label>Rules</label><textarea id="f-rules" rows="3"></textarea></div>
+    <div class="modal-footer">
+      <button style="background:#333; color:#fff; padding:10px 20px; border:none; border-radius:4px; cursor:pointer;" onclick="closeModal()">Cancel</button>
+      <button style="background:var(--accent); color:#000; font-weight:bold; padding:10px 20px; border:none; border-radius:4px; cursor:pointer;" onclick="saveBroker()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const PASSWORD = "Whale0000";
+  
+  // ⚠️ بەستەری فایربەیسەکەت لێرە دابنێ کە لە هەنگاوی یەکەم کۆپیت کردووە (پاشکۆی /brokers پۆینت بکە)
+  const FIREBASE_URL = "https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/brokers";
+
+  let brokersData = {};
+
+  function tryLogin() {
+    if (document.getElementById('pwd-input').value === PASSWORD) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-shell').style.display = 'block';
+      loadBrokers();
+    } else { alert("Wrong Password!"); }
+  }
+
+  function logout() { location.reload(); }
+
+  async function loadBrokers() {
+    try {
+      const res = await fetch(`${FIREBASE_URL}.json`);
+      brokersData = await res.json() || {};
+      renderTable();
+    } catch (err) { console.error(err); }
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('table-body');
+    tbody.innerHTML = '';
+    const keys = Object.keys(brokersData);
+    document.getElementById('total-count').textContent = keys.length;
+
+    keys.forEach(key => {
+      const b = brokersData[key];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${b.name}</strong></td>
+        <td style="color:var(--accent); font-weight:bold;">${b.bonusAmount}</td>
+        <td>${b.category}</td>
+        <td><span style="color:${b.status==='active'?'var(--accent3)':'var(--accent2)'}">${b.status}</span></td>
+        <td>👁️ ${b.viewCount || 0}</td>
+        <td>⭐ ${b.ratingAvg || 0}</td>
+        <td>
+          <button class="btn-icon edit" onclick="openEdit('${key}')">✎ Edit</button>
+          <button class="btn-icon del" onclick="deleteBroker('${key}')">✕ Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openAdd() {
+    document.getElementById('f-key').value = '';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-bonus').value = '';
+    document.getElementById('f-rules').value = '';
+    document.getElementById('f-link').value = '';
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function openEdit(key) {
+    const b = brokersData[key];
+    document.getElementById('f-key').value = key;
+    document.getElementById('f-id').value = b.id || '';
+    document.getElementById('f-name').value = b.name;
+    document.getElementById('f-bonus').value = b.bonusAmount;
+    document.getElementById('f-category').value = b.category;
+    document.getElementById('f-status').value = b.status;
+    document.getElementById('f-link').value = b.link || '';
+    document.getElementById('f-rules').value = b.rules;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+  async function saveBroker() {
+    const key = document.getElementById('f-key').value;
+    const bObj = {
+      id: key ? brokersData[key].id : Date.now(),
+      name: document.getElementById('f-name').value,
+      bonusAmount: document.getElementById('f-bonus').value,
+      category: document.getElementById('f-category').value,
+      status: document.getElementById('f-status').value,
+      link: document.getElementById('f-link').value,
+      rules: document.getElementById('f-rules').value,
+      viewCount: key ? (brokersData[key].viewCount || 0) : 0,
+      ratingAvg: key ? (brokersData[key].ratingAvg || 0) : 0,
+      ratingCount: key ? (brokersData[key].ratingCount || 0) : 0,
+      createdAt: key ? brokersData[key].createdAt : new Date().toISOString()
+    };
+
+    const method = key ? 'PUT' : 'POST';
+    const url = key ? `${FIREBASE_URL}/${key}.json` : `${FIREBASE_URL}.json`;
+
+    await fetch(url, { method: method, body: JSON.stringify(bObj) });
+    closeModal();
+    loadBrokers();
+    showToast("Successfully Saved!");
+  }
+
+  async function deleteBroker(key) {
+    if(!confirm("Are you sure?")) return;
+    await fetch(`${FIREBASE_URL}/${key}.json`, { method: 'DELETE' });
+    loadBrokers();
+    showToast("Deleted!");
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast'); t.textContent = msg; t.style.display = 'block';
+    setTimeout(() => t.style.display='none', 2000);
+  }
+</script>
+</body>
+</html>
