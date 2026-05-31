@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Whale Admin Panel</title>
+    <style>
+        body { background: #0b111e; color: #fff; font-family: sans-serif; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; background: #131c2e; padding: 20px; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1e293b; }
+        th, td { border: 1px solid #334155; padding: 12px; text-align: left; }
+        button { padding: 8px 12px; cursor: pointer; border: none; border-radius: 4px; margin: 2px; }
+        #adminPanel { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="loginBox" class="container">
+    <h2>Admin Login</h2>
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="login()">Login</button>
+</div>
+
+<div id="adminPanel" class="container">
+    <h2>Manage Brokers</h2>
+    <input type="text" id="bName" placeholder="Name">
+    <input type="text" id="bAmount" placeholder="Bonus">
+    <button onclick="addBroker()">Add Broker</button>
+    <button onclick="downloadJson()" style="background: #00ca72;">📥 Download JSON</button>
+    <div id="tableContainer"></div>
+</div>
+
+<script>
+    let brokers = []; // لێرە لیستە ڕاستەقینەکە دابنێ
+
+    function login() {
+        if(document.getElementById('pass').value === "Whale2026") {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            renderTable();
+        } else { alert("Wrong Password"); }
+    }
+
+    function renderTable() {
+        let html = "<table><tr><th>Name</th><th>Bonus</th><th>Actions</th></tr>";
+        brokers.forEach((b, index) => {
+            html += `<tr><td>${b.name}</td><td>${b.bonusAmount}</td>
+            <td><button onclick="deleteBroker(${index})">Delete</button></td></tr>`;
+        });
+        document.getElementById('tableContainer').innerHTML = html + "</table>";
+    }
+
+    function deleteBroker(index) {
+        brokers.splice(index, 1);
+        renderTable();
+    }
+
+    function addBroker() {
+        brokers.push({ name: document.getElementById('bName').value, bonusAmount: document.getElementById('bAmount').value });
+        renderTable();
+    }
+
+    function downloadJson() {
+        let data = JSON.stringify(brokers);
+        let a = document.createElement('a');
+        a.href = "data:text/json;charset=utf-8," + encodeURIComponent(data);
+        a.download = "brokers.json";
+        a.click();
+    }
+</script>
+</body>
+</html>
