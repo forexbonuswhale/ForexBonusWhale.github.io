@@ -1,25 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>ForexBonusWhale</title>
-    <meta name="description" content="ForexBonusWhale — built on Replit. Update this description to reflect the app." />
-    <meta name="robots" content="index, follow" />
-    <meta property="og:title" content="ForexBonusWhale" />
-    <meta property="og:description" content="ForexBonusWhale — built on Replit. Update this description to reflect the app." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="ForexBonusWhale" />
-    <meta name="twitter:description" content="ForexBonusWhale — built on Replit. Update this description to reflect the app." />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whale Admin Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script type="module" crossorigin src="/assets/index-DSrBvtBR.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-B4RvVK1U.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b111e; color: #ffffff; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { background-color: #131c2e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #fec107; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; color: #cbd5e1; }
+        input, select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #334155; background-color: #1e293b; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #00ca72; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 16px; margin-top: 15px; }
+        button:hover { background-color: #00b363; }
+        #loginBox { text-align: center; }
+        .error { color: #ff4a4a; font-size: 14px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="loginBox">
+        <h2>Whale Admin Login</h2>
+        <div class="form-group">
+            <input type="password" id="passInput" placeholder="Enter Admin Password">
+        </div>
+        <button onclick="checkPassword()">Login</button>
+        <p id="loginError" class="error">Incorrect password! Try again.</p>
+    </div>
+
+    <div id="panelBox" style="display: none;">
+        <h2>Add New Broker</h2>
+        <div class="form-group">
+            <label>Broker Name</label>
+            <input type="text" id="bName" placeholder="e.g. NordFX">
+        </div>
+        <div class="form-group">
+            <label>Bonus Amount ($)</label>
+            <input type="number" id="bBonus" placeholder="e.g. 100">
+        </div>
+        <div class="form-group">
+            <label>Status</label>
+            <select id="bStatus">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Affiliate Link</label>
+            <input type="url" id="bLink" placeholder="https://...">
+        </div>
+        
+        <button onclick="generateJson()">Generate & Download brokers.json</button>
+    </div>
+</div>
+
+<script>
+    // لێرەدا دەتوانیت پاسۆردەکەت بگۆڕیت بە ئارەزووی خۆت
+    const SECRET_PASSWORD = "Whale2026"; 
+
+    function checkPassword() {
+        const input = document.getElementById('passInput').value;
+        if(input === SECRET_PASSWORD) {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('panelBox').style.display = 'block';
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    }
+
+    function generateJson() {
+        const name = document.getElementById('bName').value;
+        const bonus = document.getElementById('bBonus').value;
+        const status = document.getElementById('bStatus').value;
+        const link = document.getElementById('bLink').value;
+
+        if(!name || !bonus || !link) {
+            alert("Please fill all fields!");
+            return;
+        }
+
+        const newBroker = {
+            id: Date.now().toString(),
+            name: name,
+            bonus: "$" + bonus,
+            status: status,
+            rating: "5.0",
+            views: 0,
+            link: link
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify([newBroker], null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "brokers.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        
+        alert("Success! Now upload this downloaded 'brokers.json' to GitHub.");
+    }
+</script>
+</body>
 </html>
