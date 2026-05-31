@@ -34,5 +34,48 @@
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- LocalStorage Bridge Script -->
+    <script>
+      // Make localStorage data available to the React app
+      (function() {
+        const STORAGE_KEY = 'adminBrokers_v1';
+        
+        // Initialize window.brokersData with localStorage data
+        function initBrokersData() {
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            window.brokersData = stored ? JSON.parse(stored) : [];
+          } catch (e) {
+            console.warn('Failed to parse brokers from localStorage:', e);
+            window.brokersData = [];
+          }
+        }
+        
+        // Initialize on script load
+        initBrokersData();
+        
+        // Listen for storage changes (from admin panel)
+        window.addEventListener('storage', function(e) {
+          if (e.key === STORAGE_KEY) {
+            initBrokersData();
+            // Dispatch custom event for React app to listen to
+            window.dispatchEvent(new CustomEvent('brokersUpdated', { 
+              detail: window.brokersData 
+            }));
+          }
+        });
+        
+        // Also expose a function to get current brokers
+        window.getBrokers = function() {
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+          } catch (e) {
+            return [];
+          }
+        };
+      })();
+    </script>
   </body>
 </html>
