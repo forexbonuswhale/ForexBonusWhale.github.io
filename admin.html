@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ForexBonusWhale – Live Brokers</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #050b14;
+    --surface: #0b1528;
+    --card: #11213d;
+    --border: #1e355e;
+    --accent: #f0b429;
+    --text: #ffffff;
+    --muted: #a0aec0;
+    --radius: 12px;
+  }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding: 20px; }
+  .container { max-width: 600px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 30px; padding: 20px 0; }
+  header h1 { color: var(--accent); font-size: 24px; margin-bottom: 5px; }
+  .broker-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  .broker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .broker-name { font-size: 20px; font-weight: bold; }
+  .status-badge { background: rgba(56,161,105,0.2); color: #38a169; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+  .bonus-amount { color: var(--accent); font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+  .broker-meta { display: flex; gap: 15px; font-size: 14px; color: var(--muted); margin-bottom: 15px; }
+  .btn-view { display: block; text-align: center; background: var(--accent); color: #000; text-decoration: none; font-weight: bold; padding: 12px; border-radius: 8px; transition: 0.2s; }
+  .btn-view:hover { opacity: 0.9; }
+  #loading { text-align: center; color: var(--muted); margin-top: 50px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>ForexBonusWhale 🐋</h1>
+    <p style="color: var(--muted);">Real-time Active Broker Bonuses</p>
+  </header>
+
+  <div id="loading">Loading live bonuses...</div>
+  <main id="brokers-list"></main>
+</div>
+
+<script>
+  // ⚠️ Replace this URL with your actual Firebase Realtime Database URL
+  const FIREBASE_URL = "https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/brokers";
+
+  async function loadLiveBrokers() {
+    try {
+      const response = await fetch(`${FIREBASE_URL}.json`);
+      const data = await response.json();
+      
+      const loadingEl = document.getElementById('loading');
+      if (loadingEl) loadingEl.style.display = 'none';
+
+      const container = document.getElementById('brokers-list');
+      container.innerHTML = '';
+
+      if (!data) {
+        container.innerHTML = '<p style="text-align:center; color:var(--muted);">No active bonuses found.</p>';
+        return;
+      }
+
+      Object.keys(data).forEach(key => {
+        const broker = data[key];
+        
+        // Only display active brokers
+        if (broker.status === 'active') {
+          const card = document.createElement('div');
+          card.className = 'broker-card';
+          card.innerHTML = `
+            <div class="broker-header">
+              <span class="broker-name">${broker.name}</span>
+              <span class="status-badge">Active</span>
+            </div>
+            <div class="bonus-amount">Bonus: ${broker.bonusAmount}</div>
+            <div class="broker-meta">
+              <span>👁️ ${broker.viewCount || 0} views</span>
+              <span>⭐ ${broker.ratingAvg || 0} (${broker.ratingCount || 0})</span>
+            </div>
+            <a href="${broker.link}" class="btn-view" target="_blank" onclick="incrementView('${key}', ${broker.viewCount || 0})">
+              View Details
+            </a>
+          `;
+          container.appendChild(card);
+        }
+      });
+    } catch (error) {
+      console.error("Error loading brokers:", error);
+    }
+  }
+
+  async function incrementView(brokerKey, currentViews) {
+    const updatedViews = currentViews + 1;
+    try {
+      await fetch(`${FIREBASE_URL}/${brokerKey}/viewCount.json`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedViews)
+      });
+    } catch (error) {
+      console.error("Error updating view count:", error);
+    }
+  }
+
+  // Automatically fetch data when page loads
+  loadLiveBrokers();
+</script>
+</body>
+</html>
