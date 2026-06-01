@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>ForexBonusWhale — Best Forex Bonuses</title>
+  <meta name="description" content="Your trusted source for the best forex bonuses, no-deposit offers, and trading contests — updated daily.">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="ForexBonusWhale">
+  <meta property="og:description" content="Your trusted source for the best forex bonuses, no-deposit offers, and trading contests — updated daily.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <!-- TailwindCSS CDN (lightweight utility framework) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: false,
+      theme: { extend: { fontFamily: { sans: ["Inter", "sans-serif"] } } },
+    };
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <!-- Anti-FOUC / theme persistence -->
+  <script>
+    (function() {
+      const saved = localStorage.getItem("fbw_theme");
+      document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+    })();
+  </script>
+</head>
+<body class="antialiased">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="max-w-7xl mx-auto px-4 py-3">
+      <div class="flex items-center gap-3">
+        <!-- Logo / Home -->
+        <button class="shrink-0 nav-link active" style="padding:0; background:none; border:none;" onclick="navigate('nodeposit')">
+          <span style="font-size:1.125rem; font-weight:900; letter-spacing:-0.025em; color:var(--text-primary);">
+            <span style="color:var(--accent)">ForexBonus</span>🐋<span style="color:var(--text-primary)">Whale</span>
+          </span>
+        </button>
+
+        <!-- Desktop search -->
+        <div class="hidden md:flex flex-1 max-w-sm relative">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style="color:var(--text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
+          </svg>
+          <input id="srch-d" type="text" class="search-input" placeholder="Search brokers…" oninput="onSearch(this.value)">
+        </div>
+
+        <div class="flex-1 hidden md:block"></div>
+
+        <!-- Desktop navigation -->
+        <nav class="hidden md:flex items-center gap-1">
+          <button class="nav-link active" id="nl-nodeposit" onclick="navigate('nodeposit')">No Deposit Bonus</button>
+          <button class="nav-link" id="nl-deposit" onclick="navigate('deposit')">Deposit Bonus</button>
+          <button class="nav-link" id="nl-contests" onclick="navigate('contests')">Contests</button>
+          <button class="nav-link" id="nl-about" onclick="navigate('about')">About</button>
+        </nav>
+
+        <!-- Theme toggle -->
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme" id="theme-btn">
+          <svg id="ico-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          <svg id="ico-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
+
+        <!-- Mobile menu button -->
+        <button class="icon-btn md:hidden" id="burger-btn" onclick="toggleMobile()">
+          <svg id="ico-menu" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="ico-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mobile panel -->
+      <div class="mobile-panel md:hidden" id="mobile-panel">
+        <div class="pt-3 pb-2 border-t border-theme mt-3">
+          <div class="relative mb-3">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none" style="color:var(--text-muted)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
+            </svg>
+            <input id="srch-m" type="text" class="search-input" placeholder="Search brokers…" oninput="onSearch(this.value)">
+          </div>
+          <div class="flex flex-col gap-1">
+            <button class="mobile-nav-btn active" id="ml-nodeposit" onclick="navigate('nodeposit');closeMobile();">No Deposit Bonus</button>
+            <button class="mobile-nav-btn" id="ml-deposit" onclick="navigate('deposit');closeMobile();">Deposit Bonus</button>
+            <button class="mobile-nav-btn" id="ml-contests" onclick="navigate('contests');closeMobile();">Contests</button>
+            <button class="mobile-nav-btn" id="ml-about" onclick="navigate('about');closeMobile();">About</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 py-8">
+    <!-- Broker detail view (hidden by default) -->
+    <div id="detail-view" class="hidden"></div>
+
+    <!-- Section view (listings, about) -->
+    <div id="section-view">
+      <!-- Stats bar (hidden on about) -->
+      <div id="stats-bar" class="stats-bar">
+        <div class="flex items-center gap-3">
+          <div class="stat-icon">
+            <svg class="w-4 h-4 text-acc" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-lg font-black text-prime leading-none" id="stat-total">0</p>
+            <p class="text-xs text-muted mt-0.5">Total Brokers</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="stat-icon">
+            <svg class="w-4 h-4 text-acc" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-lg font-black text-prime leading-none" id="stat-active">0</p>
+            <p class="text-xs text-muted mt-0.5">Active Bonuses</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="stat-icon">
+            <svg class="w-4 h-4 text-acc" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-lg font-black text-prime leading-none" id="stat-reviews">0</p>
+            <p class="text-xs text-muted mt-0.5">Total Reviews</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section containers -->
+      <div id="sec-nodeposit" class="sec"></div>
+      <div id="sec-deposit" class="sec hidden"></div>
+      <div id="sec-contests" class="sec hidden"></div>
+      <div id="sec-about" class="sec hidden"></div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer py-10">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col items-center gap-2 mb-8">
+        <span style="font-size:1.5rem; font-weight:900; letter-spacing:-0.025em;">
+          <span style="color:var(--accent)">ForexBonus</span><span style="color:var(--text-primary)">🐋Whale</span>
+        </span>
+        <p class="text-sec text-sm text-center max-w-md">Your trusted source for the best forex bonuses, no-deposit offers, and trading contests — updated daily.</p>
+      </div>
+      <nav class="flex flex-wrap items-center justify-center gap-2 mb-8">
+        <button class="footer-nav-btn" onclick="navigate('nodeposit')">No Deposit Bonus</button>
+        <button class="footer-nav-btn" onclick="navigate('deposit')">Deposit Bonus</button>
+        <button class="footer-nav-btn" onclick="navigate('contests')">Contests</button>
+        <button class="footer-nav-btn" onclick="navigate('about')">About Us</button>
+      </nav>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted" style="border-top:1px solid var(--border); padding-top:1.5rem;">
+        <p>© <span id="footer-yr"></span> ForexBonusWhale. All rights reserved.</p>
+        <p class="text-center sm:text-right">Trading forex involves risk. Bonus offers subject to broker terms.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GLOBAL JAVASCRIPT (Firebase logic, theme, reviews, routing) -->
+  <script>
+    // ----- CONSTANTS -----
+    const FB = "https://froexbonuswhale-default-rtdb.firebaseio.com";
+    const FB_ALL = FB + "/brokers.json";
+    const FB_ONE = (id) => FB + "/brokers/" + id + ".json";
+    const VIEWS_K = "fbw_views";
+    const REVS_K = "fbw_reviews";
+
+    // ----- STATE -----
+    var S = {
+      brokers: [],
+      section: "nodeposit",
+      filter: "all",
+      sort: "most_popular",
+      search: "",
+      loading: true,
+      error: null,
+      views: {},
+      reviews: [],
+      detail: null,
+      mobileOpen: false,
+    };
+
+    // ----- UTILS -----
+    function esc(s) { return String(s || "").replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) { return c; }); }
+    function lsGet(k, fb) { try { let v = JSON.parse(localStorage.getItem(k) || "null"); return v !== null ? v : fb; } catch(e) { return fb; } }
+    function lsSet(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+    // ----- THEME -----
+    function getTheme() { return localStorage.getItem("fbw_theme") === "light" ? "light" : "dark"; }
+    function applyTheme(t) {
+      document.documentElement.setAttribute("data-theme", t);
+      localStorage.setItem("fbw_theme", t);
+      document.getElementById("ico-moon").classList.toggle("hidden", t === "light");
+      document.getElementById("ico-sun").classList.toggle("hidden", t === "dark");
+    }
+    function toggleTheme() { applyTheme(getTheme() === "dark" ? "light" : "dark"); }
+
+    // ----- MOBILE MENU -----
+    function toggleMobile() {
+      S.mobileOpen = !S.mobileOpen;
+      document.getElementById("mobile-panel").classList.toggle("open", S.mobileOpen);
+      document.getElementById("ico-menu").classList.toggle("hidden", S.mobileOpen);
+      document.getElementById("ico-close").classList.toggle("hidden", !S.mobileOpen);
+    }
+    function closeMobile() { S.mobileOpen = false; document.getElementById("mobile-panel").classList.remove("open"); document.getElementById("ico-menu").classList.remove("hidden"); document.getElementById("ico-close").classList.add("hidden"); }
+
+    // ----- SEARCH -----
+    function onSearch(v) {
+      S.search = v;
+      let d = document.getElementById("srch-d"), m = document.getElementById("srch-m");
+      if(d && d.value !== v) d.value = v;
+      if(m && m.value !== v) m.value = v;
+      renderSection();
+    }
+
+    // ----- NAVIGATION -----
+    const CAT_MAP = { nodeposit: "no_deposit", deposit: "deposit", contests: "contest" };
+    function navigate(sec) {
+      S.section = sec; S.filter = "all"; S.detail = null;
+      ["nodeposit","deposit","contests","about"].forEach(s => {
+        let nl = document.getElementById("nl-"+s), ml = document.getElementById("ml-"+s);
+        if(nl) nl.classList.toggle("active", s===sec);
+        if(ml) ml.classList.toggle("active", s===sec);
+      });
+      document.querySelectorAll(".sec").forEach(el => el.classList.add("hidden"));
+      let el = document.getElementById("sec-"+sec);
+      if(el) el.classList.remove("hidden");
+      document.getElementById("stats-bar").style.display = sec === "about" ? "none" : "";
+      document.getElementById("detail-view").classList.add("hidden");
+      document.getElementById("section-view").classList.remove("hidden");
+      renderSection();
+      let path = { nodeposit:"", deposit:"deposit", contests:"contests", about:"about" }[sec] || "";
+      history.replaceState(null, "", "#/" + path);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ----- RENDER SECTION (listings) -----
+    function renderSection() {
+      if(S.section === "about") { renderAbout(); return; }
+      let el = document.getElementById("sec-"+S.section);
+      if(!el) return;
+      let displayed = getDisplayed();
+      let cat = CAT_MAP[S.section] || "";
+      let total = S.brokers.filter(b => b.category === cat).length;
+      let label = { nodeposit:"No Deposit Bonuses", deposit:"Deposit Bonuses", contests:"Contests" }[S.section] || "";
+      el.innerHTML = `<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+        <div class="flex items-center gap-2"><h1 class="section-heading">${esc(label)}</h1><span class="count-badge">${total}</span></div>
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="pill-bar">${pill("all","All")}${pill("active","Active")}${pill("inactive","Inactive")}</div>
+          <select class="sort-select" onchange="setSort(this.value)">${opt("most_popular","Most Popular")}${opt("highest_rated","Highest Rated")}${opt("newest","Newest")}${opt("oldest","Oldest")}</select>
+        </div>
+      </div><div class="broker-grid" id="grid-${S.section}">${renderGrid(displayed)}</div>`;
+      updateStats();
+    }
+    function pill(val,label) { return `<button class="pill${S.filter===val?" active":""}" onclick="setFilter('${val}')">${label}</button>`; }
+    function opt(val,label) { return `<option value="${val}"${S.sort===val?" selected":""}>${label}</option>`; }
+    function setFilter(f) { S.filter = f; renderSection(); }
+    function setSort(s) { S.sort = s; renderSection(); }
+
+    // ----- DATA HELPER: merge local views/reviews -----
+    function withLocalData(b) {
+      let revs = S.reviews.filter(r => r.brokerId === b.id);
+      let extra = S.views[b.id] || 0;
+      let newCnt = b.ratingCount + revs.length;
+      let sum = revs.reduce((a,r) => a + r.rating, 0);
+      let newAvg = newCnt === 0 ? 0 : (b.ratingAvg * b.ratingCount + sum) / newCnt;
+      return { ...b, viewCount: b.viewCount + extra, ratingAvg: Math.round(newAvg*100)/100, ratingCount: newCnt };
+    }
+    function getDisplayed() {
+      let cat = CAT_MAP[S.section];
+      if(!cat) return [];
+      let list = S.brokers.filter(b => b.category === cat).map(withLocalData);
+      if(S.filter === "active") list = list.filter(b => b.status === "active");
+      if(S.filter === "inactive") list = list.filter(b => b.status !== "active");
+      if(S.search) { let q = S.search.toLowerCase(); list = list.filter(b => (b.name || "").toLowerCase().includes(q) || (b.rules || "").toLowerCase().includes(q)); }
+      if(S.sort === "most_popular") list.sort((a,b) => b.viewCount - a.viewCount);
+      if(S.sort === "highest_rated") list.sort((a,b) => b.ratingAvg - a.ratingAvg);
+      if(S.sort === "newest") list.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      if(S.sort === "oldest") list.sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
+      return list.slice(0, 20);
+    }
+    function updateStats() {
+      let total = S.brokers.length;
+      let active = S.brokers.filter(b => b.status === "active").length;
+      let reviews = S.brokers.reduce((a,b) => a + (b.ratingCount||0),0) + S.reviews.length;
+      let t = document.getElementById("stat-total"); if(t) t.textContent = total;
+      let a = document.getElementById("stat-active"); if(a) a.textContent = active;
+      let r = document.getElementById("stat-reviews"); if(r) r.textContent = reviews;
+    }
+
+    // ----- STAR RENDERING -----
+    function stars(avg, cnt, size="sm") {
+      let full = Math.round(avg || 0);
+      let starHtml = '<span class="stars">';
+      for(let i=1;i<=5;i++) starHtml += `<span class="${i<=full?"star":"star-empty"}">★</span>`;
+      starHtml += "</span>";
+      if(cnt !== undefined) starHtml += `<span style="font-size:0.75rem;color:var(--text-muted);margin-left:0.25rem;">${(avg||0).toFixed(1)} (${cnt||0})</span>`;
+      return starHtml;
+    }
+
+    // ----- CARD HTML -----
+    function cardHTML(b) {
+      let act = b.status === "active";
+      return `<div class="broker-card" onclick="openDetail(${b.id})">
+        <div class="card-stripe ${act?"stripe-active":"stripe-inactive"}"></div>
+        <div class="flex justify-between items-start mb-3 gap-2">
+          <h3 class="broker-name">${esc(b.name)}</h3>
+          <div class="flex items-center gap-1.5 shrink-0">
+            ${(b.ratingAvg>=4 && b.ratingCount>=3) ? '<span class="badge badge-verified">Verified</span>' : ''}
+            <span class="badge ${act?"badge-active":"badge-inactive"}"><span class="dot ${act?"dot-green":"dot-grey"}"></span>${act?"Active":"Inactive"}</span>
+          </div>
+        </div>
+        <p class="broker-bonus">Bonus: ${esc(b.bonusAmount)}</p>
+        <div class="mb-3">${stars(b.ratingAvg, b.ratingCount)}</div>
+        <div class="card-footer"><span style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:3px;"><svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>${(b.viewCount||0).toLocaleString()} views</span><button class="view-details-btn">View Details <svg style="width:14px;height:14px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></button></div>
+      </div>`;
+    }
+    function renderGrid(list) {
+      if(S.loading) return '<div class="empty-state" style="grid-column:1/-1"><div class="spinner"></div><p class="es-title">Loading brokers…</p></div>';
+      if(!list.length) return '<div class="empty-state" style="grid-column:1/-1"><svg class="es-icon w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><p class="es-title">No brokers found.</p><p class="es-sub">Adjust search or filters.</p></div>';
+      return list.map(cardHTML).join("");
+    }
+
+    // ----- DETAIL PAGE LOGIC -----
+    function openDetail(id) {
+      let raw = S.brokers.find(b => b.id == id);
+      if(!raw) return;
+      S.views[id] = (S.views[id] || 0) + 1;
+      lsSet(VIEWS_K, S.views);
+      S.detail = id;
+      document.getElementById("section-view").classList.add("hidden");
+      document.getElementById("detail-view").classList.remove("hidden");
+      history.replaceState(null, "", "#/broker/" + id);
+      renderDetail();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function renderDetail() {
+      let id = S.detail;
+      if(!id) { goBack(); return; }
+      let b = withLocalData(S.brokers.find(b => b.id == id) || {});
+      if(!b.id) { goBack(); return; }
+      let act = b.status === "active";
+      let localRevs = S.reviews.filter(r => r.brokerId === id);
+      let seedCnt = b.ratingCount - localRevs.length;
+      let labels = ["","Terrible","Poor","Average","Good","Excellent"];
+      let revsHTML = localRevs.length ? localRevs.map(r => `<div style="padding:1.25rem;border-bottom:1px solid var(--border);"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.75rem;margin-bottom:0.5rem;"><div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:2rem;height:2rem;border-radius:50%;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;"><svg style="width:1rem;height:1rem;color:var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></div><div><p style="font-weight:600;font-size:0.875rem;color:var(--text-primary);">${esc(r.userName)}</p><div style="display:flex;align-items:center;gap:0.25rem;">${stars(r.rating)}<span style="font-size:0.7rem;color:var(--text-muted);margin-left:0.25rem;">${labels[r.rating]}</span></div></div></div><span style="font-size:0.7rem;color:var(--text-muted);">${new Date(r.createdAt).toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"})}</span></div><p style="font-size:0.875rem;color:var(--text-secondary);line-height:1.6;padding-left:2.5rem;">${esc(r.comment)}</p></div>`).join("") : (seedCnt ? '' : '<div style="padding:2rem;text-align:center;"><p style="color:var(--text-muted);">No reviews yet. Be the first!</p></div>');
+      let detailHtml = `<button class="back-btn" onclick="goBack()"><svg style="width:1rem;height:1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg> Back to list</button>
+      <div class="detail-card"><div class="card-stripe ${act?"stripe-active":"stripe-inactive"}"></div><div class="detail-body"><div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6"><div><div class="flex flex-wrap items-center gap-3 mb-2"><h1 style="font-size:1.875rem;font-weight:900;color:var(--text-primary);">${esc(b.name)}</h1><span class="badge ${act?"badge-active":"badge-inactive"}" style="font-size:0.875rem;padding:0.25rem 0.75rem;border-radius:9999px;"><span class="dot ${act?"dot-green pulse":"dot-grey"}"></span>${act?"Active Bonus":"Inactive"}</span>${(b.ratingAvg>=4 && b.ratingCount>=3) ? '<span class="badge badge-verified" style="font-size:0.875rem;padding:0.25rem 0.75rem;border-radius:9999px;">Verified</span>' : ''}</div><p style="font-size:1.875rem;font-weight:900;color:var(--accent);">Bonus: ${esc(b.bonusAmount)}</p></div><span style="font-size:0.875rem;color:var(--text-muted);display:flex;align-items:center;gap:4px;"><svg style="width:1rem;height:1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>${(b.viewCount||0).toLocaleString()} views</span></div><div class="mb-6">${stars(b.ratingAvg, b.ratingCount)}</div><div class="rules-box"><h3 style="font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;"><span style="width:4px;height:1.25rem;background:var(--accent);border-radius:2px;"></span> Rules & Conditions</h3><p style="color:var(--text-secondary);line-height:1.7;white-space:pre-line;font-size:0.875rem;">${esc(b.rules || "No specific rules provided.")}</p></div><a href="${esc(b.link||"#")}" target="_blank" rel="noopener noreferrer" class="claim-btn"><svg style="width:1.25rem;height:1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Claim Bonus Now</a></div></div>
+      <div class="review-box"><div style="padding:1.5rem;border-bottom:1px solid var(--border);"><h2 style="font-size:1.25rem;font-weight:900;color:var(--text-primary);">Trader Reviews${b.ratingCount ? `<span style="font-size:0.875rem;font-weight:400;color:var(--text-muted);margin-left:0.5rem;">(${b.ratingCount})</span>` : ""}</h2></div>${seedCnt>0 ? `<div style="padding:1rem 1.25rem;background:var(--bg-elevated);border-bottom:1px solid var(--border);"><p style="color:var(--text-muted);font-size:0.875rem;">${seedCnt} verified trader ${seedCnt===1?"review":"reviews"} — average rating: <span style="color:var(--accent);font-weight:600;">${b.ratingAvg.toFixed(1)}/5</span></p></div>` : ""}${revsHTML}<div style="padding:1.5rem;background:var(--bg-elevated);"><h3 style="font-size:1.125rem;font-weight:700;color:var(--text-primary);margin-bottom:0.25rem;">Write a Review</h3><p style="color:var(--text-muted);font-size:0.875rem;margin-bottom:1.25rem;">Share your experience with <span style="color:var(--accent);font-weight:600;">${esc(b.name)}</span></p><form id="rev-form" onsubmit="submitReview(event,${id})" style="display:flex;flex-direction:column;gap:1rem;"><div><label style="display:block;font-size:0.875rem;font-weight:600;margin-bottom:0.375rem;">Your Name</label><input type="text" id="rev-name" class="review-input" placeholder="Enter your name" required /></div><div><label style="display:block;font-size:0.875rem;font-weight:600;margin-bottom:0.375rem;">Rating</label><div id="star-input" style="display:flex;gap:0.25rem;">${[1,2,3,4,5].map(i => `<span class="star-input" data-v="${i}" onclick="pickStar(${id},${i})">★</span>`).join("")}</div><input type="hidden" id="rev-rating" value="0" /></div><div><label style="display:block;font-size:0.875rem;font-weight:600;margin-bottom:0.375rem;">Your Review</label><textarea id="rev-comment" class="review-input" rows="4" placeholder="Did you successfully withdraw profits?" required></textarea></div><button type="submit" id="rev-submit" class="submit-btn">Submit Review</button></form></div></div>`;
+      document.getElementById("detail-view").innerHTML = detailHtml;
+    }
+    function pickStar(brokerId, val) {
+      document.getElementById("rev-rating").value = val;
+      document.querySelectorAll("#star-input .star-input").forEach(el => { let v = parseInt(el.getAttribute("data-v")); el.style.color = v <= val ? "#eab308" : "var(--border-subtle)"; });
+    }
+    function submitReview(e, brokerId) {
+      e.preventDefault();
+      let name = document.getElementById("rev-name").value.trim();
+      let rating = parseInt(document.getElementById("rev-rating").value) || 0;
+      let comment = document.getElementById("rev-comment").value.trim();
+      if(!name || !rating || !comment) { alert("Please fill all fields and rating."); return; }
+      let btn = document.getElementById("rev-submit"); btn.disabled = true; btn.innerHTML = '<span class="spinner-sm"></span> Submitting…';
+      setTimeout(() => {
+        let rev = { id: Date.now(), brokerId: brokerId, userName: name, rating: rating, comment: comment, createdAt: new Date().toISOString() };
+        S.reviews.unshift(rev); lsSet(REVS_K, S.reviews); renderDetail();
+      }, 400);
+    }
+    function goBack() { S.detail = null; document.getElementById("detail-view").classList.add("hidden"); document.getElementById("section-view").classList.remove("hidden"); navigate(S.section); }
+
+    // ----- ABOUT PAGE -----
+    function renderAbout() {
+      let el = document.getElementById("sec-about"); if(!el) return;
+      el.innerHTML = `<div class="max-w-4xl mx-auto"><h1 style="font-size:1.875rem;font-weight:900;border-left:4px solid var(--accent);padding-left:1rem;margin-bottom:2rem;">About ForexBonus🐋Whale</h1><div style="display:flex;flex-direction:column;gap:1.5rem;"><div class="about-card"><div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;"><div class="about-icon"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg></div><h2 style="font-size:1.25rem;font-weight:700;">Our Mission</h2></div><p style="color:var(--text-secondary);line-height:1.7;">ForexBonusWhale tracks no-deposit bonuses, deposit match offers, and trading contests across hundreds of brokers — helping you find the best opportunities with verified data.</p></div><div class="about-card"><div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;"><div class="about-icon"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg></div><h2 style="font-size:1.25rem;font-weight:700;">How We Verify</h2></div><div style="display:grid;grid-template-columns:repeat(1,1fr);gap:1rem;">${aboutInner("Regulation Check","FCA, ASIC, CySEC verification")}${aboutInner("Community Reviews","Real trader ratings & feedback")}${aboutInner("Active Monitoring","Daily term updates and expiry tracking")}</div></div><div class="about-card red-border"><div style="display:flex;align-items:center;gap:0.75rem;"><div class="about-icon red"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div><h2 style="font-size:1.25rem;font-weight:700;">Risk Disclaimer</h2></div><p style="color:var(--text-secondary);font-size:0.875rem;margin-top:1rem;"><strong>Trading forex involves substantial risk</strong> of loss. Bonus information subject to change. We do not provide financial advice.</p></div></div></div>`;
+    }
+    function aboutInner(title, desc) { return `<div class="about-inner-card"><p style="font-weight:700;margin-bottom:0.25rem;">${title}</p><p style="font-size:0.75rem;color:var(--text-muted);">${desc}</p></div>`; }
+
+    // ----- FIREBASE + DATA LOADING -----
+    async function loadData() {
+      S.loading = true; renderSection();
+      try {
+        let res = await fetch(FB_ALL);
+        let data = await res.json();
+        if(data && typeof data === "object" && Object.keys(data).length) S.brokers = Object.values(data).filter(Boolean);
+        else await loadLocalAndSeed();
+      } catch(e) { await loadLocal(); }
+      S.loading = false; renderSection(); updateStats();
+    }
+    async function loadLocal() { try { let res = await fetch("brokers.json"); S.brokers = await res.json(); } catch(e) { S.brokers = []; } }
+    async function loadLocalAndSeed() { await loadLocal(); if(S.brokers.length){ let obj = {}; S.brokers.forEach(b=>obj[b.id]=b); fetch(FB_ALL,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(obj)}).catch(()=>{}); } }
+
+    // ----- ROUTING -----
+    function handleHash() {
+      let h = (window.location.hash || "#/").replace("#","");
+      if(h.startsWith("/broker/")) { let id = parseInt(h.split("/broker/")[1]) || 0; if(!S.loading && id){ S.detail=id; navigate("nodeposit"); setTimeout(()=>openDetail(id),50); } else navigate("nodeposit"); }
+      else if(h.startsWith("/deposit")) navigate("deposit");
+      else if(h.startsWith("/contests")) navigate("contests");
+      else if(h.startsWith("/about")) navigate("about");
+      else navigate("nodeposit");
+    }
+
+    // ----- INITIALIZATION -----
+    document.getElementById("footer-yr").textContent = new Date().getFullYear();
+    applyTheme(getTheme());
+    S.views = lsGet(VIEWS_K, {});
+    S.reviews = lsGet(REVS_K, []);
+    loadData().then(handleHash);
+    window.addEventListener("hashchange", handleHash);
+  </script>
+</body>
+</html>
