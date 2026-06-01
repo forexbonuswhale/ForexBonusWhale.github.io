@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "name": "ExampleBroker Premium",
+    "bonusName": "100% Welcome Bonus",
+    "amount": "$500",
+    "rating": 4.8,
+    "isActive": true,
+    "isVerified": true,
+    "category": "no-deposit",
+    "description": "ExampleBroker offers a generous 100% matching bonus on your first deposit up to $500. No deposit required to start trading with our platform.",
+    "link": "https://example.com",
+    "rules": [
+      "Minimum $50 deposit to receive bonus",
+      "30x turnover requirement",
+      "Valid for 30 days from account opening",
+      "Can be used on Forex, Metals, and Commodities"
+    ]
+  },
+  {
+    "id": 2,
+    "name": "GlobalTrade Elite",
+    "bonusName": "30% Deposit Bonus",
+    "amount": "$300",
+    "rating": 4.5,
+    "isActive": true,
+    "isVerified": true,
+    "category": "deposit-bonus",
+    "description": "GlobalTrade gives you a 30% bonus on deposits up to $300. Perfect for traders looking to boost their trading capital.",
+    "link": "https://example.com",
+    "rules": [
+      "Minimum $100 deposit required",
+      "25x turnover requirement",
+      "Maximum bonus withdrawal $300",
+      "Applies to first 3 deposits"
+    ]
+  },
+  {
+    "id": 3,
+    "name": "ContestPro Trading",
+    "bonusName": "Weekly Trading Contest",
+    "amount": "$1,000",
+    "rating": 4.9,
+    "isActive": true,
+    "isVerified": true,
+    "category": "contest",
+    "description": "Compete in weekly trading contests with prizes up to $1,000. Build your trading skills while competing against other traders.",
+    "link": "https://example.com",
+    "rules": [
+      "Contest runs Monday-Friday",
+      "Top 10 traders win prizes",
+      "Minimum trade size: 0.01 lots",
+      "Contest resets weekly"
+    ]
+  }
+]
