@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .input-section {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-group button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-group button:active {
+            transform: translateY(0);
+        }
+
+        .filter-section {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+        }
+
+        .stats {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #999;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        .tasks-section {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+
+        .task-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .task-item:hover {
+            background: #f8f9fa;
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .task-item.completed .task-checkbox {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .task-checkbox:hover {
+            border-color: #667eea;
+        }
+
+        .task-checkbox.checked::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .task-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .task-text {
+            font-size: 1rem;
+            color: #333;
+            word-break: break-word;
+        }
+
+        .task-meta {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .task-priority {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+        }
+
+        .priority-medium {
+            background: rgba(255, 165, 0, 0.1);
+            color: #ff8c00;
+        }
+
+        .priority-low {
+            background: rgba(0, 128, 0, 0.1);
+            color: #008000;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .task-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .edit-btn {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .edit-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .delete-btn {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+
+        .footer {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #f0f0f0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .clear-all-btn {
+            padding: 8px 15px;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0000;
+            border: 1px solid #ff0000;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .clear-all-btn:hover {
+            background: rgba(255, 0, 0, 0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-input-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .modal-input-group label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-input-group input,
+        .modal-input-group select {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .modal-input-group input:focus,
+        .modal-input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn.save {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-btn.save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal-btn.cancel {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #e0e0e0;
+        }
+
+        /* Scrollbar */
+        .tasks-section::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .tasks-section::-webkit-scrollbar-track {
+            background: #f0f0f0;
+        }
+
+        .tasks-section::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .tasks-section::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .stats {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .filter-section {
+                gap: 8px;
+            }
+
+            .filter-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✓ To-Do List</h1>
+            <p>Stay organized and productive</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="taskInput" 
+                    placeholder="Add a new task..."
+                    autocomplete="off"
+                >
+                <button onclick="openAddModal()">Add</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <button class="filter-btn active" onclick="filterTasks('all')">All</button>
+            <button class="filter-btn" onclick="filterTasks('active')">Active</button>
+            <button class="filter-btn" onclick="filterTasks('completed')">Completed</button>
+            <button class="filter-btn" onclick="filterTasks('high')">High Priority</button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalCount">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="activeCount">0</div>
+                <div class="stat-label">Active</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="completedCount">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+
+        <div class="tasks-section" id="tasksList"></div>
+
+        <div class="footer">
+            <button class="clear-all-btn" onclick="clearCompleted()">Clear Completed</button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Add New Task</div>
+            
+            <div class="modal-input-group">
+                <label for="modalTaskInput">Task Description</label>
+                <input type="text" id="modalTaskInput" placeholder="Enter task description...">
+            </div>
+
+            <div class="modal-input-group">
+                <label for="modalPriority">Priority</label>
+                <select id="modalPriority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+
+            <div class="modal-input-group">
+                <label for="modalDueDate">Due Date (Optional)</label>
+                <input type="date" id="modalDueDate">
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-btn save" onclick="saveTask()">Save Task</button>
+                <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Local Storage Management
+        const STORAGE_KEY = 'todoList_tasks';
+        let tasks = [];
+        let currentFilter = 'all';
+        let editingTaskId = null;
+
+        // Initialize app
+        window.addEventListener('load', () => {
+            loadTasks();
+            renderTasks();
+        });
+
+        // Load tasks from local storage
+        function loadTasks() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            tasks = stored ? JSON.parse(stored) : [];
+        }
+
+        // Save tasks to local storage
+        function saveTasks() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+        }
+
+        // Add/Edit Task Modal
+        function openAddModal() {
+            editingTaskId = null;
+            document.getElementById('modalTitle').textContent = 'Add New Task';
+            document.getElementById('modalTaskInput').value = '';
+            document.getElementById('modalPriority').value = 'medium';
+            document.getElementById('modalDueDate').value = '';
+            document.getElementById('taskModal').classList.add('active');
+            document.getElementById('modalTaskInput').focus();
+        }
+
+        function openEditModal(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                editingTaskId = taskId;
+                document.getElementById('modalTitle').textContent = 'Edit Task';
+                document.getElementById('modalTaskInput').value = task.text;
+                document.getElementById('modalPriority').value = task.priority;
+                document.getElementById('modalDueDate').value = task.dueDate || '';
+                document.getElementById('taskModal').classList.add('active');
+                document.getElementById('modalTaskInput').focus();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('taskModal').classList.remove('active');
+            editingTaskId = null;
+        }
+
+        function saveTask() {
+            const taskText = document.getElementById('modalTaskInput').value.trim();
+            const priority = document.getElementById('modalPriority').value;
+            const dueDate = document.getElementById('modalDueDate').value;
+
+            if (!taskText) {
+                alert('Please enter a task description');
+                return;
+            }
+
+            if (editingTaskId) {
+                // Update existing task
+                const task = tasks.find(t => t.id === editingTaskId);
+                if (task) {
+                    task.text = taskText;
+                    task.priority = priority;
+                    task.dueDate = dueDate;
+                    task.updatedAt = new Date().toISOString();
+                }
+            } else {
+                // Create new task
+                const newTask = {
+                    id: Date.now(),
+                    text: taskText,
+                    completed: false,
+                    priority: priority,
+                    dueDate: dueDate,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                };
+                tasks.unshift(newTask);
+            }
+
+            saveTasks();
+            renderTasks();
+            closeModal();
+        }
+
+        // Toggle task completion
+        function toggleTask(taskId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (task) {
+                task.completed = !task.completed;
+                task.updatedAt = new Date().toISOString();
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Delete task
+        function deleteTask(taskId) {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks = tasks.filter(t => t.id !== taskId);
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Clear completed tasks
+        function clearCompleted() {
+            const completedCount = tasks.filter(t => t.completed).length;
+            if (completedCount > 0 && confirm(`Delete ${completedCount} completed task(s)?`)) {
+                tasks = tasks.filter(t => !t.completed);
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // Filter tasks
+        function filterTasks(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            renderTasks();
+        }
+
+        // Get filtered tasks
+        function getFilteredTasks() {
+            switch(currentFilter) {
+                case 'active':
+                    return tasks.filter(t => !t.completed);
+                case 'completed':
+                    return tasks.filter(t => t.completed);
+                case 'high':
+                    return tasks.filter(t => t.priority === 'high');
+                default:
+                    return tasks;
+            }
+        }
+
+        // Format date for display
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString + 'T00:00:00');
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === tomorrow.toDateString()) {
+                return 'Tomorrow';
+            } else {
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+        }
+
+        // Render tasks
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            const filteredTasks = getFilteredTasks();
+
+            // Update stats
+            const completed = tasks.filter(t => t.completed).length;
+            const active = tasks.filter(t => !t.completed).length;
+            document.getElementById('totalCount').textContent = tasks.length;
+            document.getElementById('activeCount').textContent = active;
+            document.getElementById('completedCount').textContent = completed;
+
+            if (filteredTasks.length === 0) {
+                tasksList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>${currentFilter === 'all' ? 'No tasks yet. Add one to get started!' : 'No tasks match this filter.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            tasksList.innerHTML = filteredTasks.map(task => `
+                <div class="task-item ${task.completed ? 'completed' : ''}">
+                    <div class="task-checkbox ${task.completed ? 'checked' : ''}" onclick="toggleTask(${task.id})"></div>
+                    <div class="task-content">
+                        <div class="task-text">${escapeHtml(task.text)}</div>
+                        <div class="task-meta">
+                            <span class="task-priority priority-${task.priority}">${task.priority}</span>
+                            ${task.dueDate ? `<span style="margin-left: 8px;">📅 ${formatDate(task.dueDate)}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn edit-btn" onclick="openEditModal(${task.id})">✎</button>
+                        <button class="task-btn delete-btn" onclick="deleteTask(${task.id})">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('taskModal').addEventListener('click', (e) => {
+            if (e.target.id === 'taskModal') {
+                closeModal();
+            }
+        });
+
+        // Enter key support
+        document.getElementById('taskInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                openAddModal();
+            }
+        });
+
+        document.getElementById('modalTaskInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveTask();
+            }
+        });
+    </script>
+</body>
+</html>
