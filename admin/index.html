@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>ForexBonusWhale — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;
+  --border:#30363d;--border2:#444c56;
+  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --accent:#f0b429;--accent2:#e09000;
+  --green:#3fb950;--red:#f85149;--blue:#58a6ff;--purple:#bc8cff;
+  --r:10px;--rs:6px;--sh:0 8px 32px rgba(0,0,0,.55);
+}
+html,body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);font-size:14px;min-height:100vh}
+
+/* ── VIEWS ─────────────────────────────────── */
+.view{display:none;min-height:100vh}
+.view.on{display:block}
+#vLogin.on{display:flex;align-items:center;justify-content:center}
+
+/* ── LOGIN ─────────────────────────────────── */
+.lCard{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;
+  padding:48px 40px;width:360px;box-shadow:var(--sh);text-align:center}
+.lLogo{font-size:26px;font-weight:800;color:var(--accent);margin-bottom:6px}
+.lSub{color:var(--text2);font-size:13px;margin-bottom:32px}
+.lLbl{display:block;text-align:left;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px}
+.lInp{width:100%;padding:11px 14px;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--rs);color:var(--text);font-size:14px;font-family:inherit;
+  outline:none;transition:border .2s;margin-bottom:14px}
+.lInp:focus{border-color:var(--accent)}
+.lBtn{width:100%;padding:12px;background:var(--accent);color:#000;font-weight:700;
+  font-size:14px;border:none;border-radius:var(--rs);cursor:pointer;font-family:inherit;transition:background .2s}
+.lBtn:hover{background:var(--accent2)}
+.lErr{display:none;margin-top:11px;padding:9px 12px;background:rgba(248,81,73,.1);
+  border:1px solid rgba(248,81,73,.3);border-radius:var(--rs);color:var(--red);font-size:12px}
+.lHint{margin-top:12px;font-size:11px;color:var(--text3)}
+
+/* ── HEADER ────────────────────────────────── */
+.hdr{background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;
+  justify-content:space-between;padding:0 22px;height:54px;position:sticky;top:0;z-index:100}
+.hLogo{font-size:16px;font-weight:800;color:var(--accent)}
+.hLogo small{color:var(--text3);font-size:11px;font-weight:400;margin-left:7px}
+.hRight{display:flex;align-items:center;gap:10px}
+.connDot{font-size:11px;font-weight:600}
+
+/* ── LAYOUT ────────────────────────────────── */
+.layout{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:210px;background:var(--bg2);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0}
+.nSec{padding:0 9px;margin-bottom:16px}
+.nLbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:.8px;padding:0 7px;margin-bottom:4px}
+.nIt{display:flex;align-items:center;gap:8px;padding:7px 7px;border-radius:var(--rs);
+  cursor:pointer;color:var(--text2);font-size:12px;font-weight:500;transition:all .12s;margin-bottom:1px}
+.nIt:hover{background:var(--bg3);color:var(--text)}
+.nIt.on{background:rgba(240,180,41,.1);color:var(--accent);font-weight:600}
+.nIt svg{width:14px;height:14px;flex-shrink:0}
+.nb{margin-left:auto;background:var(--bg4);color:var(--text3);font-size:9px;font-weight:700;
+  padding:1px 6px;border-radius:100px;min-width:18px;text-align:center}
+.nIt.on .nb{background:rgba(240,180,41,.18);color:var(--accent)}
+.main{flex:1;padding:24px;overflow:auto;min-width:0}
+.pg{display:none}
+.pg.on{display:block}
+.pgH{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:10px}
+.pgT{font-size:18px;font-weight:700}
+.pgS{font-size:11px;color:var(--text2);margin-top:3px}
+
+/* ── FIREBASE NOTICE ───────────────────────── */
+.fbNote{background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.22);border-radius:var(--rs);
+  padding:11px 15px;font-size:12px;color:var(--accent);margin-bottom:20px;display:none;line-height:1.8}
+.fbNote b{display:block;margin-bottom:3px;font-size:13px}
+code{background:var(--bg4);border-radius:3px;padding:1px 5px;font-family:monospace;font-size:10px}
+
+/* ── STATS ─────────────────────────────────── */
+.sGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-bottom:22px}
+.sCard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
+.sLbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.sVal{font-size:24px;font-weight:800}
+.ca{color:var(--accent)}.cg{color:var(--green)}.cb{color:var(--blue)}.cp{color:var(--purple)}.cr{color:var(--red)}
+
+/* ── FILTER BAR ────────────────────────────── */
+.fBar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.srch{flex:1;min-width:160px;max-width:280px;padding:7px 11px;background:var(--bg3);
+  border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);
+  font-size:12px;font-family:inherit;outline:none;transition:border .2s}
+.srch:focus{border-color:var(--accent)}
+.srch::placeholder{color:var(--text3)}
+.fBtn{padding:5px 11px;border-radius:var(--rs);font-size:11px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:inherit}
+.fBtn:hover{background:var(--bg4)}
+.fBtn.on{background:rgba(240,180,41,.1);color:var(--accent);border-color:rgba(240,180,41,.28)}
+
+/* ── TABLE ─────────────────────────────────── */
+.tWrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead{background:var(--bg3)}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.018)}
+.bImg{width:34px;height:34px;border-radius:6px;object-fit:contain;background:var(--bg3);border:1px solid var(--border)}
+.bIni{width:34px;height:34px;border-radius:6px;background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text2)}
+.tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:10px;font-weight:600}
+.tND{background:rgba(188,140,255,.14);color:var(--purple)}
+.tDep{background:rgba(88,166,255,.14);color:var(--blue)}
+.tCon{background:rgba(240,180,41,.14);color:var(--accent)}
+.bOn{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;
+  font-size:10px;font-weight:700;background:rgba(63,185,80,.1);color:var(--green)}
+.bOn::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green)}
+.bOff{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;
+  font-size:10px;font-weight:700;background:rgba(248,81,73,.1);color:var(--red)}
+.bOff::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--red)}
+.aCell{display:flex;gap:4px;align-items:center}
+
+/* ── BUTTONS ───────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:6px 13px;
+  border-radius:var(--rs);font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .14s}
+.bAcc{background:var(--accent);color:#000}.bAcc:hover{background:var(--accent2)}
+.bGh{background:transparent;color:var(--text2);border:1px solid var(--border2)}.bGh:hover{background:var(--bg3);color:var(--text)}
+.bDng{background:rgba(248,81,73,.14);color:var(--red)}.bDng:hover{background:rgba(248,81,73,.26)}
+
+/* ── BROKER CARDS ──────────────────────────── */
+.bkGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px}
+.bkCard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px;cursor:pointer;transition:border-color .15s}
+.bkCard:hover{border-color:var(--accent)}
+.bkTop{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.bkLogo{width:40px;height:40px;border-radius:7px;background:var(--bg3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;
+  color:var(--accent);overflow:hidden;flex-shrink:0}
+.bkLogo img{width:100%;height:100%;object-fit:contain}
+.bkName{font-size:13px;font-weight:700}
+.bkMeta{font-size:10px;color:var(--text3);margin-top:1px}
+.bkStats{display:flex;gap:12px}
+.bkSv{font-size:17px;font-weight:800;text-align:center}
+.bkSl{font-size:9px;color:var(--text3);margin-top:1px;text-align:center}
+
+/* ── EMPTY ─────────────────────────────────── */
+.empty{padding:52px 16px;text-align:center;color:var(--text3)}
+.eIco{font-size:38px;margin-bottom:9px}
+.eTtl{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px}
+
+/* ── MODAL ─────────────────────────────────── */
+.mOv{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;
+  display:none;align-items:flex-start;justify-content:center;padding:34px 16px;overflow-y:auto}
+.mOv.on{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:13px;
+  width:100%;max-width:600px;box-shadow:var(--sh)}
+.mH{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.mTitle{font-size:14px;font-weight:700}
+.mX{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;
+  line-height:1;padding:3px;border-radius:4px;transition:color .12s}
+.mX:hover{color:var(--text)}
+.mBody{padding:20px}
+.mFt{display:flex;gap:8px;justify-content:flex-end;padding:13px 20px;border-top:1px solid var(--border)}
+.fRow{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.fg{margin-bottom:14px}
+.fg:last-child{margin-bottom:0}
+.fLbl{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:4px}
+.fI,.fS,.fTA{width:100%;padding:8px 11px;background:var(--bg3);border:1px solid var(--border2);
+  border-radius:var(--rs);color:var(--text);font-size:12px;font-family:inherit;outline:none;transition:border .2s}
+.fI:focus,.fS:focus,.fTA:focus{border-color:var(--accent)}
+.fS{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24'%3E%3Cpath fill='%236e7681' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:26px}
+.fS option{background:var(--bg3)}
+.fTA{resize:vertical;min-height:76px;line-height:1.6}
+
+/* ── TOGGLE ────────────────────────────────── */
+.togWrap{display:flex;align-items:center;gap:10px;margin-top:8px}
+.tog{position:relative;width:42px;height:22px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.togSl{position:absolute;inset:0;background:var(--bg4);border-radius:100px;cursor:pointer;
+  transition:background .2s;border:1px solid var(--border2)}
+.togSl::before{content:'';position:absolute;width:16px;height:16px;left:2px;top:2px;
+  background:#fff;border-radius:50%;transition:transform .2s}
+.tog input:checked+.togSl{background:var(--green);border-color:var(--green)}
+.tog input:checked+.togSl::before{transform:translateX(20px)}
+.togLbl{font-size:12px}
+.togLbl.on{color:var(--green);font-weight:700}
+.togLbl.off{color:var(--red);font-weight:700}
+
+/* ── STARS ─────────────────────────────────── */
+.stars{display:flex;gap:3px}
+.star{font-size:20px;cursor:pointer;color:var(--bg4);transition:color .1s;user-select:none;line-height:1}
+.star.on{color:var(--accent)}
+
+/* ── IMAGE ─────────────────────────────────── */
+.imgRow{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.upBox{border:2px dashed var(--border2);border-radius:var(--rs);padding:12px;text-align:center;
+  cursor:pointer;font-size:11px;color:var(--text3);transition:border .2s;min-width:150px}
+.upBox:hover{border-color:var(--accent)}
+.upBox input{display:none}
+.imgPrev{width:68px;height:68px;border-radius:7px;object-fit:contain;background:var(--bg3);
+  border:1px solid var(--border);display:none}
+
+/* ── CONFIRM ───────────────────────────────── */
+#confOv{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;
+  display:none;align-items:center;justify-content:center}
+#confOv.on{display:flex}
+.confBox{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;
+  padding:24px 24px 16px;max-width:330px;width:100%;text-align:center;box-shadow:var(--sh)}
+.cIco{font-size:34px;margin-bottom:9px}
+.cTtl{font-size:14px;font-weight:700;margin-bottom:6px}
+.cDesc{font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.5}
+.cActs{display:flex;gap:8px;justify-content:center}
+
+/* ── TOAST ─────────────────────────────────── */
+#toastW{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:6px}
+.toast{padding:10px 15px;border-radius:var(--rs);font-size:12px;font-weight:500;
+  min-width:190px;box-shadow:var(--sh);animation:sup .22s ease}
+@keyframes sup{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.tok{background:#1c3323;border:1px solid var(--green);color:var(--green)}
+.terr{background:#331c1c;border:1px solid var(--red);color:var(--red)}
+.tinf{background:#1c2633;border:1px solid var(--blue);color:var(--blue)}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+
+@media(max-width:700px){
+  .sidebar{display:none}
+  .main{padding:14px}
+  .fRow{grid-template-columns:1fr}
+  .sGrid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ LOGIN ══════════════ -->
+<div id="vLogin" class="view on">
+  <div class="lCard">
+    <div class="lLogo">🐋 ForexBonusWhale</div>
+    <div class="lSub">Admin Panel — Restricted Access</div>
+    <label class="lLbl" for="pwInp">Admin Password</label>
+    <input type="password" class="lInp" id="pwInp" placeholder="Enter password to continue" autocomplete="current-password"/>
+    <button class="lBtn" id="loginBtn">Sign In →</button>
+    <div class="lErr" id="loginErr">❌ Incorrect password. Please try again.</div>
+    <div class="lHint">Password is case-sensitive</div>
+  </div>
+</div>
+
+<!-- ══════════════ ADMIN ══════════════ -->
+<div id="vAdmin" class="view">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="hLogo">🐋 ForexBonusWhale <small>Admin Panel</small></div>
+    <div class="hRight">
+      <span class="connDot" id="connDot" style="color:var(--text3)">⚪ Connecting…</span>
+      <button class="btn bGh" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="nSec">
+        <div class="nLbl">Overview</div>
+        <div class="nIt on" onclick="goto('dash',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </div>
+        <div class="nIt" onclick="goto('all',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          All Bonuses <span class="nb" id="nb-all">0</span>
+        </div>
+      </div>
+      <div class="nSec">
+        <div class="nLbl">Categories</div>
+        <div class="nIt" onclick="gotoCat('no_deposit',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>
+          No Deposit <span class="nb" id="nb-nd">0</span>
+        </div>
+        <div class="nIt" onclick="gotoCat('deposit',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Deposit Bonus <span class="nb" id="nb-dep">0</span>
+        </div>
+        <div class="nIt" onclick="gotoCat('contest',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+          Contests <span class="nb" id="nb-con">0</span>
+        </div>
+      </div>
+      <div class="nSec">
+        <div class="nLbl">Brokers</div>
+        <div class="nIt" onclick="goto('brokers',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Broker List
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+
+      <!-- Firebase notice (shown if rules block access) -->
+      <div class="fbNote" id="fbNote">
+        <b>⚠️ Firebase Access Blocked</b>
+        Your Firebase Realtime Database rules are blocking access. To fix this, go to:<br/>
+        <strong>Firebase Console → Realtime Database → Rules</strong> and set:<br/>
+        <code>{ "rules": { ".read": true, ".write": true } }</code>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <div id="pg-dash" class="pg on">
+        <div class="pgH">
+          <div>
+            <div class="pgT">Dashboard</div>
+            <div class="pgS">
+              <span style="color:var(--green)">● Active = shown to website visitors</span> &nbsp;·&nbsp;
+              <span style="color:var(--red)">● Inactive = hidden from website visitors</span>
+            </div>
+          </div>
+          <button class="btn bAcc" onclick="openAdd()">+ Add Bonus</button>
+        </div>
+        <div class="sGrid">
+          <div class="sCard"><div class="sLbl">Total Bonuses</div><div class="sVal ca" id="s-tot">—</div></div>
+          <div class="sCard"><div class="sLbl">Active (Visible)</div><div class="sVal cg" id="s-act">—</div></div>
+          <div class="sCard"><div class="sLbl">Inactive (Hidden)</div><div class="sVal cr" id="s-ina">—</div></div>
+          <div class="sCard"><div class="sLbl">No Deposit</div><div class="sVal cb" id="s-nd">—</div></div>
+          <div class="sCard"><div class="sLbl">Deposit Bonus</div><div class="sVal cp" id="s-dep">—</div></div>
+          <div class="sCard"><div class="sLbl">Contests</div><div class="sVal ca" id="s-con">—</div></div>
+          <div class="sCard"><div class="sLbl">Total Brokers</div><div class="sVal" id="s-bk">—</div></div>
+          <div class="sCard"><div class="sLbl">Total Views</div><div class="sVal cb" id="s-vw">—</div></div>
+        </div>
+        <div class="tWrap">
+          <table><thead><tr>
+            <th>Broker</th><th>Bonus</th><th>Category</th><th>Status</th><th>Rating</th><th>Views</th><th>Actions</th>
+          </tr></thead><tbody id="dash-tb"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ALL BONUSES PAGE -->
+      <div id="pg-all" class="pg">
+        <div class="pgH">
+          <div>
+            <div class="pgT" id="allTitle">All Bonuses</div>
+            <div class="pgS">Toggle <strong>Active/Inactive</strong> to control what visitors see on the main site</div>
+          </div>
+          <button class="btn bAcc" onclick="openAdd()">+ Add Bonus</button>
+        </div>
+        <div class="fBar">
+          <input type="search" class="srch" id="srch" placeholder="Search broker or amount…" oninput="renderAll()"/>
+          <button class="fBtn on" onclick="setSF('all',this)">All</button>
+          <button class="fBtn" onclick="setSF('active',this)">Active</button>
+  
