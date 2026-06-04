@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - ForexBonusWhale</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white p-4">
+
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-6">Broker Admin Panel</h1>
+    
+    <!-- Admin Form -->
+    <form id="broker-form" class="bg-slate-800 p-6 rounded-xl shadow-lg space-y-4 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="brokerName" placeholder="Broker Name" class="p-2 bg-slate-700 rounded border border-slate-600 w-full" required>
+        <input type="text" id="title" placeholder="Bonus Title" class="p-2 bg-slate-700 rounded border border-slate-600 w-full" required>
+        <input type="text" id="type" placeholder="Type (deposit/no-deposit/contest)" class="p-2 bg-slate-700 rounded border border-slate-600 w-full" required>
+        <input type="text" id="amount" placeholder="Amount (e.g. 100%)" class="p-2 bg-slate-700 rounded border border-slate-600 w-full">
+        <input type="text" id="minDeposit" placeholder="Min Deposit" class="p-2 bg-slate-700 rounded border border-slate-600 w-full">
+        <input type="number" step="0.1" id="rating" placeholder="Rating (4.6)" class="p-2 bg-slate-700 rounded border border-slate-600 w-full">
+        <input type="url" id="claimUrl" placeholder="Claim URL" class="p-2 bg-slate-700 rounded border border-slate-600 w-full">
+      </div>
+      <textarea id="description" placeholder="Description" class="w-full p-2 bg-slate-700 rounded border border-slate-600"></textarea>
+      
+      <div class="flex items-center gap-4">
+        <label><input type="checkbox" id="isActive" checked> Active</label>
+        <label><input type="checkbox" id="isPopular"> Popular</label>
+      </div>
+      
+      <button type="submit" class="bg-blue-600 px-6 py-2 rounded hover:bg-blue-700">Save Bonus</button>
+    </form>
+
+    <!-- List -->
+    <div id="bonus-list" class="space-y-4"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const app = initializeApp({ databaseURL: "https://froexbonuswhale-default-rtdb.firebaseio.com" });
+    const db = getDatabase(app);
+    const bonusesRef = ref(db, 'bonuses');
+
+    // Save
+    document.getElementById('broker-form').onsubmit = (e) => {
+      e.preventDefault();
+      push(bonusesRef, {
+        brokerName: document.getElementById('brokerName').value,
+        title: document.getElementById('title').value,
+        type: document.getElementById('type').value,
+        amount: document.getElementById('amount').value,
+        minDeposit: document.getElementById('minDeposit').value,
+        rating: parseFloat(document.getElementById('rating').value),
+        claimUrl: document.getElementById('claimUrl').value,
+        description: document.getElementById('description').value,
+        isActive: document.getElementById('isActive').checked,
+        isPopular: document.getElementById('isPopular').checked,
+        createdAt: Date.now(),
+        views: 0
+      }).then(() => alert("Saved!"));
+    };
+
+    // Load
+    onValue(bonusesRef, (snapshot) => {
+      const data = snapshot.val();
+      const list = document.getElementById('bonus-list');
+      list.innerHTML = "";
+      for (let id in data) {
+        list.innerHTML += `<div class="bg-slate-800 p-4 rounded border border-slate-700 flex justify-between">
+          <span>${data[id].brokerName || 'No Name'} - ${data[id].title}</span>
+          <span class="text-green-500">${data[id].isActive ? 'Active' : 'Inactive'}</span>
+        </div>`;
+      }
+    });
+  </script>
+</body>
+</html>
