@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://forexbonuswhale.github.io/sitemap.xml
