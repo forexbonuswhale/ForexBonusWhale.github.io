@@ -25,37 +25,13 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://forexbonuswhale.github.io/bonus/hfm-bonus</loc>
-    <lastmod>2026-06-07</lastmod>
+    <loc>https://forexbonuswhale.github.io/bonus/grandcapital-deposit</loc>
+    <lastmod>2026-06-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://forexbonuswhale.github.io/bonus/primexbt-rewards</loc>
-    <lastmod>2026-06-10</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://forexbonuswhale.github.io/bonus/xm-bonus</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://forexbonuswhale.github.io/bonus/xchief-no-deposit</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://forexbonuswhale.github.io/bonus/xchief-deposit</loc>
-    <lastmod>2026-06-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://forexbonuswhale.github.io/bonus/justmarkets-contest</loc>
+    <loc>https://forexbonuswhale.github.io/bonus/headway-bonus</loc>
     <lastmod>2026-06-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -67,8 +43,38 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://forexbonuswhale.github.io/bonus/headway-bonus</loc>
+    <loc>https://forexbonuswhale.github.io/bonus/justmarkets-contest</loc>
     <lastmod>2026-06-12</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forexbonuswhale.github.io/bonus/xchief-deposit</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forexbonuswhale.github.io/bonus/xchief-no-deposit</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forexbonuswhale.github.io/bonus/xm-bonus</loc>
+    <lastmod>2026-06-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forexbonuswhale.github.io/bonus/primexbt-rewards</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://forexbonuswhale.github.io/bonus/hfm-bonus</loc>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
