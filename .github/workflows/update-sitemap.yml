@@ -1,0 +1,40 @@
+name: Update Sitemap
+
+on:
+  # Runs once a day at midnight UTC
+  schedule:
+    - cron: '0 0 * * *'
+
+  # Also runs on every push to main (e.g. when you update index.html or other files)
+  push:
+    branches:
+      - main
+
+  # Allows you to trigger it manually from the GitHub Actions tab
+  workflow_dispatch:
+
+jobs:
+  update-sitemap:
+    runs-on: ubuntu-latest
+
+    # Skip if this is the sitemap bot's own commit (prevents infinite loop)
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    permissions:
+      contents: write   # allows the job to commit sitemap.xml back to the repo
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate and push sitemap.xml
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node generate-sitemap.js
+        
